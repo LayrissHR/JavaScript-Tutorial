@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="bg" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Интерактивен Урок: Въведение в JavaScript</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: #f8f7f4;
+                color: #2d3748;
+            }
+            .code-block {
+                background-color: #1a202c;
+                color: #e2e8f0;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                font-family: "SFMono-Regular", Consolas, "Liberation Mono",
+                    Menlo, Courier, monospace;
+                font-size: 0.875rem;
+                line-height: 1.5;
+                white-space: pre-wrap;
+                position: relative;
+            }
+            .code-block .token-keyword {
+                color: #c792ea;
+            }
+            .code-block .token-string {
+                color: #c3e88d;
+            }
+            .code-block .token-comment {
+                color: #637777;
+            }
+            .code-block .token-function {
+                color: #82aaff;
+            }
+            .code-block .token-variable {
+                color: #ffcb6b;
+            }
+            .code-block .token-number {
+                color: #f78c6c;
+            }
+            .code-block .token-operator {
+                color: #89ddff;
+            }
+            .code-block .token-punctuation {
+                color: #89ddff;
+            }
+
+            .output-console {
+                background-color: #2d3748;
+                color: #a0aec0;
+                padding: 1rem;
+                border-radius: 0 0 0.75rem 0.75rem;
+                margin-top: -1px;
+                font-family: "SFMono-Regular", Consolas, "Liberation Mono",
+                    Menlo, Courier, monospace;
+                font-size: 0.875rem;
+                min-height: 4rem;
+                border: 1px solid #4a5568;
+                white-space: pre-wrap;
+            }
+            .output-console .log-entry {
+                border-bottom: 1px solid #4a5568;
+                padding: 0.25rem 0;
+            }
+            .output-console .log-entry:last-child {
+                border-bottom: none;
+            }
+            .run-button {
+                position: absolute;
+                top: 0.75rem;
+                right: 0.75rem;
+                background-color: #4a5568;
+                color: white;
+                padding: 0.25rem 0.75rem;
+                border-radius: 0.375rem;
+                font-size: 0.75rem;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+            .run-button:hover {
+                background-color: #718096;
+            }
+            .active-nav {
+                background-color: #e0e7ff;
+                color: #3730a3;
+                font-weight: 600;
+            }
+        </style>
+    </head>
+    <body class="bg-stone-50 text-slate-800">
+        <div class="flex min-h-screen">
+            <aside
+                class="w-64 bg-white/80 backdrop-blur-lg border-r border-stone-200 p-6 sticky top-0 h-screen hidden lg:block overflow-y-auto"
+            >
+                <h2 class="text-xl font-bold text-indigo-800 mb-6">
+                    Съдържание
+                </h2>
+                <nav id="desktop-nav">
+                    <ul class="space-y-2">
+                        <li>
+                            <a
+                                href="#introduction"
+                                class="block font-semibold text-slate-700 hover:text-indigo-600"
+                                >Модул 1: Въведение</a
+                            >
+                        </li>
+                        <ul
+                            class="ml-4 mt-2 space-y-2 border-l border-stone-200"
+                        >
+                            <li>
+                                <a
+                                    href="#what-is-js"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Какво е JavaScript?</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="#html-css-js"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >HTML, CSS & JS</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="#capabilities"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Възможности</a
+                                >
+                            </li>
+                        </ul>
+                        <li>
+                            <a
+                                href="#first-steps"
+                                class="block font-semibold text-slate-700 hover:text-indigo-600 mt-4"
+                                >Модул 2: Първи Стъпки</a
+                            >
+                        </li>
+                        <ul
+                            class="ml-4 mt-2 space-y-2 border-l border-stone-200"
+                        >
+                            <li>
+                                <a
+                                    href="#writing-code"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Интегриране на код</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="#comments"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Коментари</a
+                                >
+                            </li>
+                        </ul>
+                        <li>
+                            <a
+                                href="#core-concepts"
+                                class="block font-semibold text-slate-700 hover:text-indigo-600 mt-4"
+                                >Модул 3: Основи</a
+                            >
+                        </li>
+                        <ul
+                            class="ml-4 mt-2 space-y-2 border-l border-stone-200"
+                        >
+                            <li>
+                                <a
+                                    href="#variables"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Променливи</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="#data-types"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Типове Данни</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="#operators"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Оператори</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="#functions"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Функции</a
+                                >
+                            </li>
+                        </ul>
+                        <li>
+                            <a
+                                href="#interactivity"
+                                class="block font-semibold text-slate-700 hover:text-indigo-600 mt-4"
+                                >Модул 4: Интерактивност</a
+                            >
+                        </li>
+                        <ul
+                            class="ml-4 mt-2 space-y-2 border-l border-stone-200"
+                        >
+                            <li>
+                                <a
+                                    href="#dom"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Какво е DOM?</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="#selecting"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Селектиране и Промяна</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="#events"
+                                    class="nav-link block text-sm text-slate-500 hover:text-indigo-600 pl-4 py-1"
+                                    >Събития</a
+                                >
+                            </li>
+                        </ul>
+                        <li>
+                            <a
+                                href="#practical-example"
+                                class="block font-semibold text-slate-700 hover:text-indigo-600 mt-4"
+                                >Практически пример</a
+                            >
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main class="flex-1 p-6 sm:p-8 md:p-12">
+                <div class="max-w-4xl mx-auto">
+                    <header class="mb-12">
+                        <h1
+                            class="text-4xl md:text-5xl font-bold text-indigo-900 leading-tight"
+                        >
+                            Въведение в езика за програмиране JavaScript
+                        </h1>
+                        <p class="mt-4 text-lg text-slate-600">
+                            Интерактивен урок за абсолютно начинаещи, който ще
+                            ви преведе през основите на най-популярния език за
+                            уеб програмиране.
+                        </p>
+                    </header>
+
+                    <section id="introduction" class="mb-16 scroll-mt-20">
+                        <h2
+                            class="text-3xl font-bold text-slate-800 border-b-2 border-indigo-200 pb-2 mb-6"
+                        >
+                            Модул 1: Същност и приложение
+                        </h2>
+
+                        <div id="what-is-js" class="scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                1. Дефиниция на JavaScript (JS)
+                            </h3>
+                            <p class="mb-4">
+                                JavaScript е скриптов език за програмиране, чрез
+                                който статичната уеб страница може да се
+                                „раздвижи“. Раздвижването може да бъде чрез
+                                промяна на съдържанието, което се визуализира на
+                                уеб страницата след извършване на действия от
+                                страна на потребителя, контрол над уеб браузъра
+                                и други. JavaScript се използва, освен за
+                                създаване на интерактивни уеб страници, но и за
+                                разработка на игри и скриптове, които се
+                                изпълняват от страна на сървъра. Програмите
+                                създадени с JavaScript се наричат скриптове.
+                                Файлът, в който се съдържа кода на скрипта, е с
+                                разширение .js. JavaScript скриптовете могат да
+                                се вграждат в HTML кода на уеб страницата,
+                                директно като код или да се извикват като външен
+                                .js файл. При зареждането на уеб страницата,
+                                външният .js файл се сваля локално на компютъра
+                                на потребителя и самото изпълнение на скрипта се
+                                извършва от уеб браузъра. Една от разликите с
+                                езика за програмиране Java е, че за изпълнението
+                                на JavaScript скрипт не е нужно преди това кода
+                                да бъде компилиран, а директно се
+                                изпълнява/интерпретира от уеб браузъра.
+                                Обикновено при работата на даден уеб сайт взимат
+                                участие две страни (сървър и клиент) – сървърът,
+                                на който се намира сайта, и уеб браузърът на
+                                потребителя, през който се разглежда сайта. Уеб
+                                браузърът можем да наричаме клиент. Някои от
+                                елементите на сайта се изпълняват от страна на
+                                клиента, като например HTML, CSS, JavaScript,
+                                картинки и всички други, които се свалят локално
+                                на компютъра на потребителя. От страна на
+                                сървъра се изпълняват елементите, които
+                                обработват заявките създадени от клиента към
+                                сървъра и връщат желаната информация, като
+                                например PHP, XML и други. JavaScript може да се
+                                изпълнява и на сървъра. За целта се използва
+                                Node.js.
+                            </p>
+                            <div
+                                class="bg-amber-100 border-l-4 border-amber-500 text-amber-800 p-4 rounded-r-lg"
+                                role="alert"
+                            >
+                                <p class="font-bold">Важно разграничение</p>
+                                <p>
+                                    Необходимо е да се отбележи, че JavaScript и
+                                    Java са две напълно различни технологии без
+                                    пряка връзка помежду си, въпреки сходството
+                                    в наименованията.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div id="html-css-js" class="mt-12 scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                2. Фундаментални технологии в уеб разработката
+                            </h3>
+                            <p class="mb-6">
+                                За пълното разбиране на ролята на JavaScript е
+                                необходимо да се разгледа неговото
+                                взаимодействие с две други ключови технологии:
+                                HTML и CSS. Те често са наричани "Светата
+                                Троица" на уеб разработката.
+                            </p>
+                            <div class="grid md:grid-cols-3 gap-6 text-center">
+                                <div
+                                    class="bg-white p-6 rounded-xl shadow-lg border border-stone-200"
+                                >
+                                    <div class="text-4xl mb-3">🧱</div>
+                                    <h4 class="font-bold text-lg text-sky-700">
+                                        HTML
+                                    </h4>
+                                    <p class="text-sm text-slate-600 mt-1">
+                                        <b>Скелетът</b>: Дефинира структурата и
+                                        съдържанието на страницата.
+                                    </p>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-xl shadow-lg border border-stone-200"
+                                >
+                                    <div class="text-4xl mb-3">🎨</div>
+                                    <h4 class="font-bold text-lg text-rose-700">
+                                        CSS
+                                    </h4>
+                                    <p class="text-sm text-slate-600 mt-1">
+                                        <b>Визията</b>: Отговаря за дизайна,
+                                        цветовете и оформлението.
+                                    </p>
+                                </div>
+                                <div
+                                    class="bg-white p-6 rounded-xl shadow-lg border border-stone-200"
+                                >
+                                    <div class="text-4xl mb-3">🧠</div>
+                                    <h4
+                                        class="font-bold text-lg text-amber-700"
+                                    >
+                                        JavaScript
+                                    </h4>
+                                    <p class="text-sm text-slate-600 mt-1">
+                                        <b>Мозъкът</b>: Добавя интерактивност и
+                                        функционалност.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="capabilities" class="mt-12 scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                3. Основни функционални възможности
+                            </h3>
+                            <p class="mb-4">
+                                С JavaScript можете да "съживите" една статична
+                                страница. Ето някои от основните му приложения:
+                            </p>
+                            <ul
+                                class="list-disc list-inside space-y-2 text-slate-600"
+                            >
+                                <li>
+                                    <b>Динамична модификация на HTML и CSS:</b>
+                                    Промяна на текстове, стилове и атрибути в
+                                    реално време.
+                                </li>
+                                <li>
+                                    <b>Обработка на потребителски събития:</b>
+                                    Реакция при кликвания, въвеждане от
+                                    клавиатура, движение на мишката и др.
+                                </li>
+                                <li>
+                                    <b>Валидация на данни във формуляри:</b>
+                                    Проверка на потребителския вход преди
+                                    изпращането му.
+                                </li>
+                                <li>
+                                    <b
+                                        >Реализация на сложни анимации и
+                                        графични интерфейси.</b
+                                    >
+                                </li>
+                                <li>
+                                    <b>Асинхронно извличане на данни (AJAX):</b>
+                                    Актуализиране на части от страницата без
+                                    презареждане.
+                                </li>
+                                <li>
+                                    <b>Разширени приложения:</b> Разработка на
+                                    мобилни и сървърни приложения.
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section id="first-steps" class="mb-16 scroll-mt-20">
+                        <h2
+                            class="text-3xl font-bold text-slate-800 border-b-2 border-indigo-200 pb-2 mb-6"
+                        >
+                            Модул 2: Първи Стъпки
+                        </h2>
+
+                        <div id="writing-code" class="scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                1. Интегриране на JavaScript код
+                            </h3>
+                            <p class="mb-4">
+                                Има три основни начина да добавите JavaScript
+                                към вашата уеб страница. Най-често срещаният и
+                                препоръчителен е чрез външен файл.
+                            </p>
+                            <p class="mb-4">
+                                За целите на този урок, ще използваме
+                                интерактивна конзола. Натиснете бутона
+                                "Изпълни", за да видите резултата от кода в
+                                конзолата отдолу.
+                            </p>
+                            <div class="code-block" data-output-id="output1">
+                                <button class="run-button">Изпълни</button>
+                                <code
+                                    ><span class="token-comment"
+                                        >// JavaScript кодът се изпълнява от
+                                        браузъра.</span
+                                    >
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >"Кодът се изпълнява успешно."</span
+                                    ><span class="token-punctuation"
+                                        >);</span
+                                    ></code
+                                >
+                            </div>
+                            <div id="output1" class="output-console"></div>
+                        </div>
+
+                        <div id="comments" class="mt-12 scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                2. Коментари в кода
+                            </h3>
+                            <p class="mb-4">
+                                Коментарите са части от кода, които се игнорират
+                                от интерпретатора. Те служат за документация и
+                                пояснение на програмната логика.
+                            </p>
+                            <div class="code-block">
+                                <code
+                                    ><span class="token-comment"
+                                        >// Това е едноредов коментар.</span
+                                    >
+
+                                    <span class="token-comment"
+                                        >/* Това е многоредов коментар, който
+                                        може да обхваща няколко последователни
+                                        реда. */</span
+                                    ></code
+                                >
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="core-concepts" class="mb-16 scroll-mt-20">
+                        <h2
+                            class="text-3xl font-bold text-slate-800 border-b-2 border-indigo-200 pb-2 mb-6"
+                        >
+                            Модул 3: Фундаментални концепции
+                        </h2>
+
+                        <div id="variables" class="scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                1. Променливи (Variables)
+                            </h3>
+                            <p class="mb-4">
+                                Променливите са "контейнери" за съхранение на
+                                данни. В съвременния JavaScript се използват
+                                <code>let</code> (за променливи стойности) и
+                                <code>const</code> (за постоянни стойности).
+                            </p>
+                            <div class="code-block" data-output-id="output2">
+                                <button class="run-button">Изпълни</button>
+                                <code
+                                    ><span class="token-keyword">let</span>
+                                    <span class="token-variable">message</span>
+                                    <span class="token-operator">=</span>
+                                    <span class="token-string"
+                                        >"Първоначално съобщение."</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-variable">message</span
+                                    ><span class="token-punctuation">);</span>
+
+                                    <span class="token-variable">message</span>
+                                    <span class="token-operator">=</span>
+                                    <span class="token-string"
+                                        >"Променено съобщение."</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-variable">message</span
+                                    ><span class="token-punctuation">);</span>
+
+                                    <span class="token-keyword">const</span>
+                                    <span class="token-variable"
+                                        >fiscalYear</span
+                                    >
+                                    <span class="token-operator">=</span>
+                                    <span class="token-number">2024</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >"Фискална година:"</span
+                                    ><span class="token-punctuation">,</span>
+                                    <span class="token-variable"
+                                        >fiscalYear</span
+                                    ><span class="token-punctuation"
+                                        >);</span
+                                    ></code
+                                >
+                            </div>
+                            <div id="output2" class="output-console"></div>
+                        </div>
+
+                        <div id="data-types" class="mt-12 scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                2. Типове данни (Data Types)
+                            </h3>
+                            <p class="mb-4">
+                                JavaScript работи с различни типове данни. Ето
+                                най-основните:
+                            </p>
+                            <ul class="list-disc list-inside space-y-2 mb-4">
+                                <li>
+                                    <b>String (Низ):</b> Текст, заграден в
+                                    кавички. <code>"Здравейте"</code>
+                                </li>
+                                <li>
+                                    <b>Number (Число):</b> Цели или дробни
+                                    числа. <code>15</code>, <code>29.99</code>
+                                </li>
+                                <li>
+                                    <b>Boolean (Булев тип):</b> Логически тип.
+                                    <code>true</code> или <code>false</code>
+                                </li>
+                                <li>
+                                    <b>Undefined:</b> Декларирана променлива без
+                                    стойност.
+                                </li>
+                                <li>
+                                    <b>Null:</b> Умишлена липса на стойност.
+                                </li>
+                            </ul>
+                            <div class="code-block" data-output-id="output3">
+                                <button class="run-button">Изпълни</button>
+                                <code
+                                    ><span class="token-keyword">let</span>
+                                    <span class="token-variable">userName</span>
+                                    <span class="token-operator">=</span>
+                                    <span class="token-string"
+                                        >"Георги Димитров"</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-keyword">let</span>
+                                    <span class="token-variable">userAge</span>
+                                    <span class="token-operator">=</span>
+                                    <span class="token-number">30</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-keyword">let</span>
+                                    <span class="token-variable"
+                                        >isLoggedIn</span
+                                    >
+                                    <span class="token-operator">=</span>
+                                    <span class="token-keyword">true</span
+                                    ><span class="token-punctuation">;</span>
+
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >"Типът на userName е:"</span
+                                    ><span class="token-punctuation">,</span>
+                                    <span class="token-keyword">typeof</span>
+                                    <span class="token-variable">userName</span
+                                    ><span class="token-punctuation">);</span>
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >"Типът на userAge е:"</span
+                                    ><span class="token-punctuation">,</span>
+                                    <span class="token-keyword">typeof</span>
+                                    <span class="token-variable">userAge</span
+                                    ><span class="token-punctuation">);</span>
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >"Типът на isLoggedIn е:"</span
+                                    ><span class="token-punctuation">,</span>
+                                    <span class="token-keyword">typeof</span>
+                                    <span class="token-variable"
+                                        >isLoggedIn</span
+                                    ><span class="token-punctuation"
+                                        >);</span
+                                    ></code
+                                >
+                            </div>
+                            <div id="output3" class="output-console"></div>
+                        </div>
+
+                        <div id="operators" class="mt-12 scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                3. Оператори
+                            </h3>
+                            <p class="mb-4">
+                                Операторите извършват действия. Разгледайте
+                                примери за аритметични и оператори за сравнение.
+                                Особено важен е операторът за стриктно равенство
+                                <code>===</code>, който сравнява стойност и тип.
+                            </p>
+                            <div class="code-block" data-output-id="output4">
+                                <button class="run-button">Изпълни</button>
+                                <code
+                                    ><span class="token-keyword">let</span>
+                                    <span class="token-variable">sum</span>
+                                    <span class="token-operator">=</span>
+                                    <span class="token-number">10</span>
+                                    <span class="token-operator">+</span>
+                                    <span class="token-number">5</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string">"10 + 5 ="</span
+                                    ><span class="token-punctuation">,</span>
+                                    <span class="token-variable">sum</span
+                                    ><span class="token-punctuation">);</span>
+
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >'Резултат от 10 === "10":'</span
+                                    ><span class="token-punctuation">,</span>
+                                    <span class="token-number">10</span>
+                                    <span class="token-operator">===</span>
+                                    <span class="token-string">"10"</span
+                                    ><span class="token-punctuation">);</span>
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >'Резултат от 10 == "10":'</span
+                                    ><span class="token-punctuation">,</span>
+                                    <span class="token-number">10</span>
+                                    <span class="token-operator">==</span>
+                                    <span class="token-string">"10"</span
+                                    ><span class="token-punctuation"
+                                        >);</span
+                                    ></code
+                                >
+                            </div>
+                            <div id="output4" class="output-console"></div>
+                        </div>
+
+                        <div id="functions" class="mt-12 scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                4. Функции (Functions)
+                            </h3>
+                            <p class="mb-4">
+                                Функциите са преизползваеми блокове код. Те
+                                могат да приемат параметри (входни данни) и да
+                                връщат резултат.
+                            </p>
+                            <div class="code-block" data-output-id="output5">
+                                <button class="run-button">Изпълни</button>
+                                <code
+                                    ><span class="token-comment"
+                                        >// Дефиниция на функция</span
+                                    >
+                                    <span class="token-keyword">function</span>
+                                    <span class="token-function"
+                                        >formatGreeting</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-variable">name</span
+                                    ><span class="token-punctuation">)</span>
+                                    <span class="token-punctuation">{</span>
+                                    <span class="token-keyword">const</span>
+                                    <span class="token-variable"
+                                        >formattedString</span
+                                    >
+                                    <span class="token-operator">=</span>
+                                    <span class="token-string"
+                                        >"Уважаеми, "</span
+                                    >
+                                    <span class="token-operator">+</span>
+                                    <span class="token-variable">name</span>
+                                    <span class="token-operator">+</span>
+                                    <span class="token-string">","</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-keyword">return</span>
+                                    <span class="token-variable"
+                                        >formattedString</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-punctuation">}</span>
+
+                                    <span class="token-comment"
+                                        >// Извикване на функцията</span
+                                    >
+                                    <span class="token-keyword">let</span>
+                                    <span class="token-variable"
+                                        >officialGreeting</span
+                                    >
+                                    <span class="token-operator">=</span>
+                                    <span class="token-function"
+                                        >formatGreeting</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >"Иван Петров"</span
+                                    ><span class="token-punctuation">);</span>
+                                    <span class="token-function">console</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function">log</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-variable"
+                                        >officialGreeting</span
+                                    ><span class="token-punctuation"
+                                        >);</span
+                                    ></code
+                                >
+                            </div>
+                            <div id="output5" class="output-console"></div>
+                        </div>
+                    </section>
+
+                    <section id="interactivity" class="mb-16 scroll-mt-20">
+                        <h2
+                            class="text-3xl font-bold text-slate-800 border-b-2 border-indigo-200 pb-2 mb-6"
+                        >
+                            Модул 4: Интерактивност с уеб страницата
+                        </h2>
+
+                        <div id="dom" class="scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                1. Какво е DOM?
+                            </h3>
+                            <p>
+                                Основната сила на JavaScript е способността му
+                                да взаимодейства с HTML. Когато браузърът зареди
+                                страница, той създава нейно дървовидно
+                                представяне, наречено
+                                <b>Document Object Model (DOM)</b>. JavaScript
+                                може да достъпва и манипулира всеки елемент
+                                (възел) от това дърво.
+                            </p>
+                        </div>
+
+                        <div id="selecting" class="mt-12 scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                2. Селектиране и Промяна на елементи
+                            </h3>
+                            <p>
+                                За да променим елемент, първо трябва да го
+                                "хванем" (селектираме), обикновено чрез неговия
+                                <code>id</code> или <code>class</code>. След
+                                това можем да променяме съдържанието, стиловете
+                                му и други.
+                            </p>
+                        </div>
+
+                        <div id="events" class="mt-12 scroll-mt-20">
+                            <h3
+                                class="text-2xl font-semibold text-slate-700 mb-4"
+                            >
+                                3. Събития (Events)
+                            </h3>
+                            <p>
+                                Събитията са действия, които се случват на
+                                страницата – кликване, натискане на клавиш и др.
+                                Можем да накараме JavaScript да "слуша" за тези
+                                събития и да изпълни код, когато те се случат.
+                                Това се прави с <code>addEventListener</code>.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section id="practical-example" class="scroll-mt-20">
+                        <h2
+                            class="text-3xl font-bold text-slate-800 border-b-2 border-indigo-200 pb-2 mb-6"
+                        >
+                            Практически пример
+                        </h2>
+                        <p class="mb-4">
+                            Нека приложим наученото дотук. По-долу има параграф
+                            и бутон. Кодът вдясно показва как JavaScript
+                            селектира тези два елемента и добавя "слушател" за
+                            събитието 'click' на бутона. Когато бутонът бъде
+                            натиснат, съдържанието и стилът на параграфа се
+                            променят.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-6 items-start">
+                            <div
+                                class="bg-white p-8 rounded-xl shadow-lg border border-stone-200"
+                            >
+                                <h4
+                                    class="text-lg font-semibold mb-4 text-center"
+                                >
+                                    Резултат на живо
+                                </h4>
+                                <p
+                                    id="info-paragraph"
+                                    class="text-center mb-4 text-slate-600 transition-colors duration-300"
+                                >
+                                    Това е първоначалният текст на параграфа.
+                                </p>
+                                <button
+                                    id="action-button"
+                                    class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform active:scale-95"
+                                >
+                                    Промени текста
+                                </button>
+                            </div>
+                            <div class="code-block">
+                                <code
+                                    ><span class="token-comment"
+                                        >// 1. Селектиране на елементи</span
+                                    >
+                                    <span class="token-keyword">const</span>
+                                    <span class="token-variable">pElement</span>
+                                    <span class="token-operator">=</span>
+                                    document<span class="token-punctuation"
+                                        >.</span
+                                    ><span class="token-function"
+                                        >getElementById</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >'info-paragraph'</span
+                                    ><span class="token-punctuation">);</span>
+                                    <span class="token-keyword">const</span>
+                                    <span class="token-variable">btn</span>
+                                    <span class="token-operator">=</span>
+                                    document<span class="token-punctuation"
+                                        >.</span
+                                    ><span class="token-function"
+                                        >getElementById</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string"
+                                        >'action-button'</span
+                                    ><span class="token-punctuation">);</span>
+
+                                    <span class="token-comment"
+                                        >// 2. Дефиниране на функция</span
+                                    >
+                                    <span class="token-keyword">function</span>
+                                    <span class="token-function"
+                                        >updateParagraph</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-punctuation">)</span>
+                                    <span class="token-punctuation">{</span>
+                                    <span class="token-variable">pElement</span
+                                    ><span class="token-punctuation">.</span
+                                    >textContent
+                                    <span class="token-operator">=</span>
+                                    <span class="token-string"
+                                        >'Съдържанието беше
+                                        актуализирано!'</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-variable">pElement</span
+                                    ><span class="token-punctuation">.</span
+                                    >style<span class="token-punctuation"
+                                        >.</span
+                                    >color
+                                    <span class="token-operator">=</span>
+                                    <span class="token-string">'#16a34a'</span
+                                    ><span class="token-punctuation">;</span>
+                                    <span class="token-comment"
+                                        >// green-600</span
+                                    >
+                                    <span class="token-punctuation">}</span>
+
+                                    <span class="token-comment"
+                                        >// 3. Регистриране на "слушател"</span
+                                    >
+                                    <span class="token-variable">btn</span
+                                    ><span class="token-punctuation">.</span
+                                    ><span class="token-function"
+                                        >addEventListener</span
+                                    ><span class="token-punctuation">(</span
+                                    ><span class="token-string">'click'</span
+                                    ><span class="token-punctuation">,</span>
+                                    <span class="token-variable"
+                                        >updateParagraph</span
+                                    ><span class="token-punctuation"
+                                        >);</span
+                                    ></code
+                                >
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer
+                        class="mt-20 pt-8 border-t border-stone-200 text-center text-slate-500"
+                    >
+                        <p>
+                            Настоящият материал представи основните концепции в
+                            JavaScript.
+                        </p>
+                        <p class="mt-2 text-sm">
+                            Пожелаваме Ви успех в процеса на овладяване на
+                            езика!
+                        </p>
+                    </footer>
+                </div>
+            </main>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const runButtons = document.querySelectorAll(".run-button");
+                runButtons.forEach((button) => {
+                    button.addEventListener("click", () => {
+                        const codeBlock = button.closest(".code-block");
+                        const code = codeBlock.querySelector("code").innerText;
+                        const outputId = codeBlock.dataset.outputId;
+                        const outputConsole = document.getElementById(outputId);
+
+                        outputConsole.innerHTML = "";
+
+                        const oldLog = console.log;
+                        console.log = function (...args) {
+                            const logEntry = document.createElement("div");
+                            logEntry.className = "log-entry";
+                            logEntry.textContent =
+                                "> " +
+                                args
+                                    .map((arg) => {
+                                        if (
+                                            typeof arg === "object" &&
+                                            arg !== null
+                                        ) {
+                                            return JSON.stringify(arg);
+                                        }
+                                        return arg;
+                                    })
+                                    .join(" ");
+                            outputConsole.appendChild(logEntry);
+                            outputConsole.scrollTop =
+                                outputConsole.scrollHeight;
+                            oldLog.apply(console, args);
+                        };
+
+                        try {
+                            new Function(code)();
+                        } catch (e) {
+                            const errorEntry = document.createElement("div");
+                            errorEntry.className = "log-entry";
+                            errorEntry.style.color = "#ef4444"; // red-500
+                            errorEntry.textContent = "Error: " + e.message;
+                            outputConsole.appendChild(errorEntry);
+                        } finally {
+                            console.log = oldLog;
+                        }
+                    });
+                });
+
+                const paragraphElement =
+                    document.getElementById("info-paragraph");
+                const actionButton = document.getElementById("action-button");
+
+                function updateParagraphContent() {
+                    paragraphElement.textContent =
+                        "Съдържанието беше актуализирано посредством JavaScript!";
+                    paragraphElement.style.color = "#16a34a";
+                    paragraphElement.style.fontWeight = "bold";
+                }
+
+                actionButton.addEventListener("click", updateParagraphContent);
+
+                const sections = document.querySelectorAll(
+                    "main section > div[id]"
+                );
+                const navLinks = document.querySelectorAll(".nav-link");
+
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                navLinks.forEach((link) => {
+                                    link.classList.remove("active-nav");
+                                    if (
+                                        link
+                                            .getAttribute("href")
+                                            .substring(1) === entry.target.id
+                                    ) {
+                                        link.classList.add("active-nav");
+                                    }
+                                });
+                            }
+                        });
+                    },
+                    { rootMargin: "-50% 0px -50% 0px" }
+                );
+
+                sections.forEach((section) => {
+                    observer.observe(section);
+                });
+            });
+        </script>
+    </body>
+</html>
