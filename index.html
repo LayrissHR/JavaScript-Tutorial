@@ -17,6 +17,31 @@
                 background-color: #f8f7f4;
                 color: #2d3748;
             }
+            .button-container {
+                text-align: center;
+                margin-top: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .next-lesson-btn {
+                display: inline-block;
+                background: var(--primary-color);
+                color: #0077ff;
+                padding: 15px 30px;
+                border-radius: 50px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, background-color 0.3s ease,
+                    box-shadow 0.3s ease;
+            }
+
+            .next-lesson-btn:hover {
+                background-color: var(--secondary-color);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+            }
             .code-block {
                 background-color: #1a202c;
                 color: #e2e8f0;
@@ -963,6 +988,9 @@
                             </div>
                         </div>
                     </section>
+ </section>
+
+
 
                     <footer
                         class="mt-20 pt-8 border-t border-stone-200 text-center text-slate-500"
@@ -976,6 +1004,12 @@
                             езика!
                         </p>
                     </footer>
+                            <div class="button-container">
+            <a href="#" class="next-lesson-btn">Към следващия урок &rarr;</a>
+        </div>
+        </div>
+
+<hr/>
                 </div>
             </main>
         </div>
