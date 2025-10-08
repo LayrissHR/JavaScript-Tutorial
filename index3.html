@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивен Урок: JavaScript Събития (Events)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #27ae60;
+            --secondary-color: #2980b9;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --code-bg: #2d2d2d;
+            --code-text: #f8f8f2;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.7;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.5s;
+            animation-fill-mode: backwards;
+        }
+
+        .lesson-section {
+            background: var(--card-bg);
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .lesson-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        .lesson-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p, li {
+            margin-bottom: 1rem;
+        }
+
+        code.inline {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--primary-color);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        pre code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+        
+        .live-example {
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .live-example button {
+            padding: 10px 15px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .live-example button:hover {
+             background: #3498db;
+        }
+
+        .task {
+            background-color: #e3f2fd;
+            border-left: 5px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .task strong {
+            color: #c0392b;
+        }
+
+        .final-tasks h3 {
+            cursor: pointer;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .final-tasks h3::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease;
+        }
+        
+        .final-tasks h3.open::before {
+             transform: translateY(-50%) rotate(90deg);
+        }
+        
+        .solution {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            border-top: 1px solid #eee;
+            margin-top: 1rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #ffffff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .nav-btn.prev {
+            background-color: #7f8c8d;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+        
+        .nav-btn.prev:hover {
+             box-shadow: 0 8px 20px rgba(127, 140, 141, 0.4);
+        }
+        
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Интерактивност със JavaScript Събития ⚡️</h1>
+        <p>Научете как да накарате страниците си да "слушат" и реагират</p>
+    </header>
+
+    <div class="container">
+        
+        <section class="lesson-section">
+            <h2>Какво е Събитие (Event)?</h2>
+            <p>Представете си, че уеб страницата е сцена, а потребителят е зрител. Всеки път, когато потребителят направи нещо – <strong>кликне с мишката</strong>, <strong>натисне клавиш</strong>, <strong>превърти страницата</strong> – той изпраща "сигнал".</p>
+            <p>В JavaScript тези сигнали се наричат <strong>събития</strong>. Нашата работа като програмисти е да "слушаме" за тези събития и да изпълняваме определен код, когато те се случат. Това прави страниците динамични и интерактивни.</p>
+        </section>
+
+        <section class="lesson-section">
+            <h2>1. Модерният начин: `addEventListener`</h2>
+            <p>Най-добрият и гъвкав начин да "закачим" функция към събитие е чрез метода <code class="inline">addEventListener()</code>. Той е като да кажете на елемент: "Хей, когато някой те кликне, изпълни тази функция!".</p>
+            <p><strong>Синтаксис:</strong> <code class="inline">element.addEventListener('eventType', handlerFunction);</code></p>
+            
+            <div class="live-example">
+                <button id="helloBtn">Кажи "Здравей"</button>
+                <p id="helloOutput"></p>
+            </div>
+            <pre><code>// 1. Намираме бутона в HTML-а
+const myButton = document.getElementById('helloBtn');
+
+// 2. Дефинираме функцията, която ще се изпълни
+function sayHello() {
+  const output = document.getElementById('helloOutput');
+  output.textContent = 'Здравей! Радвам се, че ме кликна.';
+}
+
+// 3. Добавяме "слушател" за 'click' събитие
+myButton.addEventListener('click', sayHello);</code></pre>
+
+            <p><strong>Предимства:</strong></p>
+            <ul>
+                <li>Можете да добавите <strong>много</strong> функции към едно и също събитие на един елемент.</li>
+                <li>Имате по-голям контрол върху това как и кога събитието се обработва.</li>
+                <li>Можете да премахнете "слушателя" по-късно с <code class="inline">removeEventListener()</code>.</li>
+            </ul>
+
+            <div class="task">
+                <p><strong>👉 Малка задача 1:</strong> Създайте <code class="inline">&lt;p&gt;</code> елемент в HTML. Напишете JavaScript, който при преминаване на мишката върху параграфа (<code class="inline">'mouseover'</code>) променя цвета на текста му на червен.</p>
+            </div>
+        </section>
+
+        <section class="lesson-section">
+            <h2>2. Магическият `event` обект</h2>
+            <p>Когато едно събитие се случи, браузърът автоматично предава специален обект към вашата функция. Обикновено го наричаме <code class="inline">event</code>, <code class="inline">evt</code> или просто <code class="inline">e</code>. Този обект носи тонове полезна информация за случилото се.</p>
+
+            <h3>Ключови свойства на `event` обекта:</h3>
+            <ul>
+                <li><code class="inline">event.target</code>: Елементът, върху който оригинално се е случило събитието. Много полезно!</li>
+                <li><code class="inline">event.key</code>: При клавиатурни събития, показва кой клавиш е бил натиснат.</li>
+                <li><code class="inline">event.preventDefault()</code>: Метод, който спира поведението по подразбиране. Например, спира изпращането на форма или следването на линк.</li>
+            </ul>
+            
+            <div class="live-example">
+                <a id="myLink" href="https://google.com">Този линк няма да те отведе до Google</a>
+            </div>
+            
+            <pre><code>const link = document.getElementById('myLink');
+
+link.addEventListener('click', function(event) {
+  // Спираме действието по подразбиране (отварянето на линка)
+  event.preventDefault();
+  
+  // event.target е самият <a> елемент
+  event.target.textContent = 'Спрях те! 😎';
+});</code></pre>
+            
+            <div class="task">
+                <p><strong>👉 Малка задача 2:</strong> Направете поле за въвеждане (<code class="inline">&lt;input type="text"&gt;</code>). Добавете "слушател" за събитието <code class="inline">'keydown'</code>. В конзолата изписвайте кой клавиш е натиснат, използвайки <code class="inline">event.key</code>.</p>
+            </div>
+        </section>
+        
+        <section class="lesson-section">
+            <h2>3. Най-често срещаните събития</h2>
+            <p>Има много видове събития, но ето някои от най-важните групи:</p>
+            <ul>
+                <li><strong>Събития с мишката:</strong> <code class="inline">click</code>, <code class="inline">dblclick</code> (двойно кликване), <code class="inline">mousedown</code>, <code class="inline">mouseup</code>, <code class="inline">mouseover</code>, <code class="inline">mouseout</code>, <code class="inline">mousemove</code>.</li>
+                <li><strong>Клавиатурни събития:</strong> <code class="inline">keydown</code> (натискане), <code class="inline">keyup</code> (пускане).</li>
+                <li><strong>Събития на формуляри:</strong> <code class="inline">submit</code> (изпращане на форма), <code class="inline">input</code> (всеки път, когато стойността се промени), <code class="inline">change</code> (когато елемент изгуби фокус след промяна), <code class="inline">focus</code>, <code class="inline">blur</code>.</li>
+                <li><strong>Събития на прозореца:</strong> <code class="inline">load</code> (когато всичко на страницата е заредено), <code class="inline">DOMContentLoaded</code> (когато HTML е зареден, но преди изображенията), <code class="inline">resize</code>, <code class="inline">scroll</code>.</li>
+            </ul>
+
+            <div class="task">
+                <p><strong>👉 Малка задача 3:</strong> Направете прозорецът на браузъра да "слуша" за събитието <code class="inline">'scroll'</code>. Всеки път, когато потребителят скролира, изписвайте в конзолата "Скролираш!".</p>
+            </div>
+        </section>
+        
+        <section class="lesson-section">
+            <h2>4. Event Bubbling (Изплуване на събития)</h2>
+            <p>Това е ключова концепция! Когато кликнете върху елемент, събитието не се случва само на него. Първо се задейства на самия елемент, след това на неговия родител, после на родителя на родителя и така нататък, докато стигне до самия прозорец. Това се нарича <strong>"изплуване"</strong> (bubbling).</p>
+            
+            <div class="live-example" id="grandparent" style="padding: 30px; background: #e74c3c; text-align: center; color: white;">
+                АЗ СЪМ ДЯДО
+                <div id="parent" style="padding: 20px; background: #3498db;">
+                    АЗ СЪМ БАЩА
+                    <button id="child">КЛИКНИ МЕ</button>
+                </div>
+            </div>
+            
+            <pre><code>const grandparent = document.getElementById('grandparent');
+const parent = document.getElementById('parent');
+const child = document.getElementById('child');
+
+grandparent.addEventListener('click', () => console.log('Кликна на дядото!'));
+parent.addEventListener('click', () => console.log('Кликна на бащата!'));
+child.addEventListener('click', () => console.log('Кликна на детето!'));
+// Резултат при клик на бутона:
+// 1. Кликна на детето!
+// 2. Кликна на бащата!
+// 3. Кликна на дядото!
+</code></pre>
+            <p>Можем да спрем това "изплуване" с метода <code class="inline">event.stopPropagation()</code>.</p>
+            <pre><code>child.addEventListener('click', function(event) {
+    console.log('Кликна на детето и спрях разпространението!');
+    event.stopPropagation(); // Спира изплуването нагоре
+});</code></pre>
+        </section>
+        
+        <section class="lesson-section">
+            <h2>5. Event Delegation (Делегиране на събития)</h2>
+            <p>Това е мощна техника, която използва "изплуването" в наша полза. Вместо да добавяме "слушател" към всеки един от 100 бутона в списък, можем да добавим <strong>само един</strong> "слушател" към техния общ родител (например <code class="inline">&lt;ul&gt;</code> елемента).</p>
+            <p>Когато кликнем на бутон, събитието "изплува" до родителя. Там ние го "хващаме" и използваме <code class="inline">event.target</code>, за да разберем кое точно дете е било кликнато.</p>
+            
+             <pre><code>&lt;ul id="myList"&gt;
+    &lt;li&gt;Елемент 1&lt;/li&gt;
+    &lt;li&gt;Елемент 2&lt;/li&gt;
+    &lt;li&gt;Елемент 3&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;script&gt;
+const list = document.getElementById('myList');
+
+list.addEventListener('click', function(event) {
+    // Проверяваме дали кликнатият елемент (event.target) е LI
+    if (event.target.tagName === 'LI') {
+        console.log('Кликна на:', event.target.textContent);
+    }
+});
+&lt;/script&gt;</code></pre>
+            <p>Това е много ефективно и работи дори за елементи, които са добавени на страницата по-късно!</p>
+        </section>
+
+        <section class="lesson-section final-tasks">
+            <h2>🏆 Самостоятелни Задачи за Упражнение</h2>
+            <p>Тествайте знанията си! Кликнете върху задачата, за да видите примерно решение.</p>
+            
+            <div class="task-item">
+                <h3 class="task-title">Задача 1: Превключвател на тема</h3>
+                <div class="solution">
+                    <p>Създайте бутон. При всяко кликване върху него, цветът на фона (<code class="inline">body</code>) на страницата да се сменя между бял и тъмносив.</p>
+                    <pre><code>// HTML: &lt;button id="themeSwitcher"&gt;Смени темата&lt;/button&gt;
+const switcher = document.getElementById('themeSwitcher');
+switcher.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+});
+// CSS:
+// .dark-theme { background-color: #2c3e50; color: white; }</code></pre>
+                </div>
+            </div>
+
+            <div class="task-item">
+                <h3 class="task-title">Задача 2: Показване на координати</h3>
+                <div class="solution">
+                    <p>Създайте <code class="inline">&lt;div&gt;</code>. При движение на мишката вътре в него (<code class="inline">mousemove</code>), показвайте текущите X и Y координати на мишката в параграф под него.</p>
+                    <pre><code>// HTML:
+// &lt;div id="mouseBox" style="height:200px; border:1px solid;"&gt;&lt;/div&gt;
+// &lt;p id="coords"&gt;Координати: X=0, Y=0&lt;/p&gt;
+
+const box = document.getElementById('mouseBox');
+const coordsP = document.getElementById('coords');
+
+box.addEventListener('mousemove', (e) => {
+    coordsP.textContent = `Координати: X=${e.clientX}, Y=${e.clientY}`;
+});</code></pre>
+                </div>
+            </div>
+            
+            <div class="task-item">
+                <h3 class="task-title">Задача 3: Брояч на символи</h3>
+                <div class="solution">
+                    <p>Създайте <code class="inline">&lt;textarea&gt;</code> и параграф до него. При всяко въвеждане на текст в полето (<code class="inline">input</code>), показвайте в параграфа колко символа са въведени.</p>
+                    <pre><code>// HTML:
+// &lt;textarea id="myText"&gt;&lt;/textarea&gt;
+// &lt;p&gt;Въведени символи: &lt;span id="charCount"&gt;0&lt;/span&gt;&lt;/p&gt;
+
+const textarea = document.getElementById('myText');
+const counter = document.getElementById('charCount');
+
+textarea.addEventListener('input', (event) => {
+    counter.textContent = event.target.value.length;
+});</code></pre>
+                </div>
+            </div>
+
+            <div class="task-item">
+                <h3 class="task-title">Задача 4: Проверка на форма</h3>
+                <div class="solution">
+                    <p>Създайте форма с поле за парола и бутон за изпращане. Ако потребителят се опита да изпрати формата (<code class="inline">submit</code>) с парола, по-къса от 8 символа, спрете изпращането (<code class="inline">preventDefault()</code>) и покажете съобщение за грешка.</p>
+                    <pre><code>// HTML:
+// &lt;form id="myForm"&gt;
+//  &lt;input type="password" id="pass"&gt;
+//  &lt;button type="submit"&gt;Изпрати&lt;/button&gt;
+// &lt;/form&gt;
+// &lt;p id="errorMsg" style="color:red;"&gt;&lt;/p&gt;
+
+const form = document.getElementById('myForm');
+const pass = document.getElementById('pass');
+const errorMsg = document.getElementById('errorMsg');
+
+form.addEventListener('submit', (e) => {
+    if (pass.value.length < 8) {
+        e.preventDefault();
+        errorMsg.textContent = 'Паролата трябва да е поне 8 символа!';
+    } else {
+        errorMsg.textContent = '';
+    }
+});</code></pre>
+                </div>
+            </div>
+            
+             <div class="task-item">
+                <h3 class="task-title">Задача 5: Скриване на елемент</h3>
+                <div class="solution">
+                    <p>Създайте бутон "Скрий" и един параграф. При клик на бутона параграфът да изчезва. (Подсказка: използвайте `element.style.display = 'none'`).</p>
+                    <pre><code>// HTML:
+// &lt;button id="hideBtn"&gt;Скрий&lt;/button&gt;
+// &lt;p id="textToHide"&gt;Този текст ще изчезне.&lt;/p&gt;
+
+document.getElementById('hideBtn').addEventListener('click', () => {
+    document.getElementById('textToHide').style.display = 'none';
+});</code></pre>
+                </div>
+            </div>
+            
+             <div class="task-item">
+                <h3 class="task-title">Задача 6: Клавишна комбинация</h3>
+                <div class="solution">
+                    <p>Направете така, че когато потребителят натисне `Ctrl + S`, в конзолата да се изписва "Запазването е предотвратено!". Не забравяйте да спрете действието по подразбиране.</p>
+                    <pre><code>window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        console.log('Запазването е предотвратено!');
+    }
+});</code></pre>
+                </div>
+            </div>
+
+             <div class="task-item">
+                <h3 class="task-title">Задача 7: Промяна на цвят от падащо меню</h3>
+                <div class="solution">
+                    <p>Създайте падащо меню (<code class="inline">&lt;select&gt;</code>) с няколко цвята (red, green, blue). При смяна на избраната опция (<code class="inline">change</code>), променяйте цвета на фона на страницата.</p>
+                    <pre><code>// HTML:
+// &lt;select id="colorPicker"&gt;
+//   &lt;option value="white"&gt;Избери цвят&lt;/option&gt;
+//   &lt;option value="red"&gt;Червен&lt;/option&gt;
+//   &lt;option value="green"&gt;Зелен&lt;/option&gt;
+//   &lt;option value="blue"&gt;Син&lt;/option&gt;
+// &lt;/select&gt;
+
+document.getElementById('colorPicker').addEventListener('change', (e) => {
+    document.body.style.backgroundColor = e.target.value;
+});</code></pre>
+                </div>
+            </div>
+
+             <div class="task-item">
+                <h3 class="task-title">Задача 8: Галерия с делегиране</h3>
+                <div class="solution">
+                    <p>Създайте <code class="inline">&lt;div&gt;</code>, съдържащ няколко малки картинки (<code class="inline">&lt;img&gt;</code>). Използвайте делегиране на събития, за да "слушате" за клик върху родителския <code class="inline">&lt;div&gt;</code>. Когато се кликне върху картинка, изведете нейния `src` атрибут в конзолата.</p>
+                    <pre><code>// HTML:
+// &lt;div id="gallery"&gt;
+//   &lt;img src="path/to/img1.jpg" alt="Image 1"&gt;
+//   &lt;img src="path/to/img2.jpg" alt="Image 2"&gt;
+// &lt;/div&gt;
+
+document.getElementById('gallery').addEventListener('click', (e) => {
+    if (e.target.tagName === 'IMG') {
+        console.log('Кликна на картинка с адрес:', e.target.src);
+    }
+});</code></pre>
+                </div>
+            </div>
+            
+            <div class="task-item">
+                <h3 class="task-title">Задача 9: Двойно кликване за харесване</h3>
+                <div class="solution">
+                    <p>Направете елемент (например, `div` с икона на сърце). При двойно кликване (<code class="inline">dblclick</code>) върху него, добавяйте CSS клас `liked` (който например оцветява сърцето в червено).</p>
+                    <pre><code>// HTML: &lt;div id="likeHeart"&gt;❤️&lt;/div&gt;
+// CSS: .liked { color: red; transform: scale(1.2); }
+
+document.getElementById('likeHeart').addEventListener('dblclick', (e) => {
+    e.target.classList.toggle('liked');
+});</code></pre>
+                </div>
+            </div>
+
+            <div class="task-item">
+                <h3 class="task-title">Задача 10: Показване на съобщение при излизане</h3>
+                <div class="solution">
+                    <p>Когато мишката на потребителя напусне прозореца на документа (<code class="inline">mouseout</code> на `document.body`), покажете `alert` със съобщение "Не си тръгвай!".</p>
+                    <pre><code>document.body.addEventListener('mouseout', (e) => {
+    // Проверяваме дали мишката наистина е напуснала прозореца,
+    // а не е просто преминала към дъщерен елемент.
+    if (!e.relatedTarget || e.relatedTarget.nodeName === 'HTML') {
+        // alert('Не си тръгвай!'); // alert може да е досадно,
+        console.log('Потребителят се опита да напусне страницата.');
+        // Важно: Показването на alert тук може да е блокирано от браузърите.
+    }
+});</code></pre>
+                </div>
+            </div>
+            
+        </section>
+        
+        <div class="nav-buttons">
+            <a href="index2.html" class="nav-btn prev">&larr; Към предишния урок</a>
+            <a href="#" class="nav-btn">Към следващия урок &rarr;</a>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript за анимации и интерактивност
+
+        // 1. Анимация на секциите при скролване
+        const sections = document.querySelectorAll('.lesson-section');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        sections.forEach(section => observer.observe(section));
+        
+        // 2. Интерактивност на финалните задачи
+        const taskTitles = document.querySelectorAll('.final-tasks .task-title');
+        taskTitles.forEach(title => {
+            title.addEventListener('click', () => {
+                title.classList.toggle('open');
+                const solution = title.nextElementSibling;
+                if (solution.style.maxHeight) {
+                    solution.style.maxHeight = null;
+                } else {
+                    solution.style.maxHeight = solution.scrollHeight + "px";
+                }
+            });
+        });
+        
+        // 3. Интерактивност за примерите в урока
+        
+        // Пример 1: addEventListener
+        document.getElementById('helloBtn').addEventListener('click', () => {
+            document.getElementById('helloOutput').textContent = 'Здравей! Радвам се, че ме кликна.';
+        });
+        
+        // Пример 2: event обект
+        document.getElementById('myLink').addEventListener('click', function(event) {
+            event.preventDefault();
+            event.target.textContent = 'Спрях те! 😎';
+            event.target.style.color = 'red';
+        });
+
+        // Пример 3: Event Bubbling
+        document.getElementById('grandparent').addEventListener('click', (e) => {
+            if (e.target.id === 'grandparent') console.log('Кликна директно на дядото!');
+        });
+        document.getElementById('parent').addEventListener('click', (e) => {
+             if (e.target.id === 'parent') console.log('Кликна директно на бащата!');
+        });
+        document.getElementById('child').addEventListener('click', (e) => {
+            console.clear(); // Изчистваме конзолата за ясен резултат
+            console.log('Кликна на детето!');
+        });
+
+    </script>
+</body>
+</html>
