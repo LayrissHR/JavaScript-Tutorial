@@ -1,385 +1,720 @@
 <!DOCTYPE html>
 <html lang="bg">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивен Урок: Асинхронен JavaScript и API</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Интерактивен Урок: JavaScript и HTML - Ниво 3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+      body {
+        font-family: "Inter", sans-serif;
+        scroll-behavior: smooth;
+        background-color: #f3f4f6;
+        background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px),
+          radial-gradient(#d1d5db 0.5px, #f3f4f6 0.5px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+      }
+      .content-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05),
+          0 2px 4px -2px rgb(0 0 0 / 0.05);
+        margin-bottom: 2rem;
+      }
+      .task-box {
+        background-color: #fffbeb;
+        border-left: 4px solid #facc15;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .fun-fact {
+        background-color: #ecfdf5;
+        border-left: 4px solid #34d399;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .advanced-box {
+        background-color: #f0f9ff;
+        border-left: 4px solid #38bdf8;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      pre {
+        background-color: #1f2937;
+        color: #d1d5db;
+        padding: 1.5rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 0.9em;
+        position: relative;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background-color: #4b5563;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.8em;
+        opacity: 0.6;
+        transition: all 0.2s ease-in-out;
+      }
+      pre:hover .copy-btn {
+        opacity: 1;
+      }
+      .copy-btn:hover {
+        background-color: #6b7280;
+      }
+      .prose h2 {
+        margin-top: 2rem;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+        scroll-margin-top: 80px;
+      }
+      .prose h3 {
+        margin-top: 2.5rem;
+        scroll-margin-top: 80px;
+      }
+      .nav-item {
+        transition: all 0.2s ease-in-out;
+      }
+      .nav-item:hover {
+        transform: translateY(-2px);
+        color: #3b82f6;
+      }
+      .animated-box {
+        width: 80px;
+        height: 80px;
+        background-color: #818cf8;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      }
+      .nav-buttons-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #d1d5db;
+      }
+      .nav-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+          0 1px 2px -1px rgb(0 0 0 / 0.1);
+      }
+      .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .nav-button.prev {
+        background-color: #e5e7eb;
+        color: #4b5563;
+        cursor: not-allowed;
+      }
+      .nav-button.next {
+        background-color: #3b82f6;
+        color: white;
+      }
 
-        :root {
-            --primary-color: #8e44ad;
-            --secondary-color: #3498db;
-            --background-color: #ecf0f1;
-            --text-color: #34495e;
-            --code-bg: #2d2d2d;
-            --code-text: #f8f8f2;
-            --card-bg: #ffffff;
-            --shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            line-height: 1.7;
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
-
-        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
-
-        header {
-            text-align: center;
-            padding: 3rem 0;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
-        }
-
-        header h1 { font-size: 3rem; margin-bottom: 0.5rem; animation: fadeInDown 1s ease-out; }
-        header p { font-size: 1.2rem; opacity: 0.9; animation: fadeInUp 1s ease-out 0.5s; animation-fill-mode: backwards; }
-
-        .lesson-section {
-            background: var(--card-bg);
-            margin-bottom: 2.5rem;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        
-        .lesson-section.visible { opacity: 1; transform: translateY(0); }
-        .lesson-section:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
-
-        h2 {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            border-bottom: 3px solid var(--secondary-color);
-            padding-bottom: 0.5rem;
-            display: inline-block;
-        }
-        
-        h3 { font-size: 1.5rem; color: var(--text-color); margin-top: 1.5rem; margin-bottom: 0.5rem; }
-        p, li { margin-bottom: 1rem; }
-
-        code.inline {
-            background-color: rgba(142, 68, 173, 0.1);
-            color: var(--primary-color);
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        pre { background-color: var(--code-bg); color: var(--code-text); padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; }
-        pre code { font-family: 'Fira Code', 'Courier New', monospace; font-size: 0.95rem; }
-        
-        .task {
-            background-color: #f4ecf7;
-            border-left: 5px solid var(--primary-color);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .task strong { color: #c0392b; }
-
-        .final-tasks h3 { cursor: pointer; position: relative; padding-left: 25px; }
-        .final-tasks h3::before { content: '▶'; position: absolute; left: 0; top: 50%; transform: translateY(-50%); transition: transform 0.3s ease; }
-        .final-tasks h3.open::before { transform: translateY(-50%) rotate(90deg); }
-        
-        .solution { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; border-top: 1px solid #eee; margin-top: 1rem; }
-        
-        .nav-buttons { display: flex; justify-content: space-between; margin: 2rem 0; }
-        .nav-btn { display: inline-block; background: var(--primary-color); color: #ffffff; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; }
-        .nav-btn.prev { background-color: #7f8c8d; }
-        .nav-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(142, 68, 173, 0.4); }
-        .nav-btn.prev:hover { box-shadow: 0 8px 20px rgba(127, 140, 141, 0.4); }
-
-        .analogy-box { background: #f9f9f9; border-left: 4px solid var(--secondary-color); padding: 1rem; margin: 1rem 0; border-radius: 4px; }
-        
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      /* Styles for collapsible tasks */
+      details {
+        background-color: #fff;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        border: 1px solid #e5e7eb;
+        transition: box-shadow 0.3s ease;
+      }
+      details:hover {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      summary {
+        cursor: pointer;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary::after {
+        content: "▼";
+        font-size: 0.8em;
+        transition: transform 0.3s ease;
+      }
+      details[open] > summary {
+        border-bottom: 1px solid #e5e7eb;
+      }
+      details[open] > summary::after {
+        transform: rotate(180deg);
+      }
+      .task-content {
+        padding: 1.5rem;
+        font-size: 0.95em;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body class="text-gray-800">
+    <nav class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="flex items-center justify-between h-16">
+          <span class="text-xl font-bold text-gray-800">JS Урок</span>
+          <div class="flex space-x-4 md:space-x-8 text-gray-600 font-medium">
+            <a href="#intro" class="nav-item">Въведение</a>
+            <a href="#ways-to-add" class="nav-item">Основи</a>
+            <a href="#advanced" class="nav-item">За напреднали</a>
+            <a href="#final-tasks" class="nav-item">Задачи</a>
+          </div>
+        </div>
+      </div>
+    </nav>
 
-    <header>
-        <h1>Асинхронен JavaScript и API 🌐</h1>
-        <p>Как да извикаме данни от интернет, без да блокираме страницата</p>
-    </header>
+    <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+      <header class="text-center mb-12">
+        <div
+          class="inline-block bg-blue-100 text-blue-800 p-4 rounded-full mb-4 shadow-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+            />
+          </svg>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+          Интерактивен Урок: JavaScript и HTML
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">
+          Научете как да вдъхнете живот на уеб страниците си!
+        </p>
+      </header>
 
-    <div class="container">
-        
-        <section class="lesson-section">
-            <h2>Проблемът: Синхронният свят</h2>
-            <p>По подразбиране JavaScript е <strong>синхронен</strong>. Това означава, че изпълнява командите една след друга, ред по ред. Той не може да започне втора задача, преди да е приключил с първата.</p>
-            <div class="analogy-box">
-                <p><strong>Аналогия:</strong> Представете си, че говорите по телефона. Докато разговорът не приключи, не можете да правите нищо друго. Това е <strong>синхронна</strong> комуникация.</p>
+      <main class="prose prose-lg max-w-none">
+        <div class="content-card">
+          <section id="intro">
+            <h2>Какво е JavaScript и защо ни е нужен?</h2>
+            <p>
+              Представете си, че HTML е скелетът на една къща - той определя
+              структурата. CSS са боята и мебелите - правят къщата да изглежда
+              добре. А
+              <strong>JavaScript е електрическата инсталация и уредите</strong>
+              - той добавя функционалност и интерактивност.
+            </p>
+            <p>
+              Накратко, JS е език за програмиране, който позволява на уеб
+              страниците да реагират на действията на потребителя. Без него
+              интернет би бил просто колекция от статични документи.
+            </p>
+            <div class="fun-fact">
+              <p class="font-bold">Забавен факт:</p>
+              <p>
+                JavaScript няма почти нищо общо с езика Java! Името е било
+                маркетингов трик през 90-те години, за да се възползва от
+                популярността на Java по онова време.
+              </p>
             </div>
-            <p>В уеб това е огромен проблем. Ако поискаме данни от бавен сървър (например, голяма снимка), цялата страница ще "замръзне" и потребителят няма да може да клика никъде, докато данните не пристигнат. Това е ужасно потребителско изживяване!</p>
-            <pre><code>console.log('Първа задача');
-alert('АЗ БЛОКИРАМ ВСИЧКО!'); // Докато не затворите този прозорец...
-console.log('Трета задача'); // ...този ред никога няма да се изпълни.
-</code></pre>
-        </section>
-
-        <section class="lesson-section">
-            <h2>Решението: Асинхронност</h2>
-            <p><strong>Асинхронният</strong> код ни позволява да стартираме дълга операция (като заявка към сървър) и да продължим да изпълняваме останалата част от кода, без да чакаме. Когато операцията приключи, JavaScript ни уведомява и ние можем да обработим резултата.</p>
-            <div class="analogy-box">
-                <p><strong>Аналогия:</strong> Изпращате SMS. Не чакате до телефона за отговор – вършите си друга работа. Когато получите отговор, телефонът ви уведомява. Това е <strong>асинхронна</strong> комуникация.</p>
-            </div>
-            <p>В JavaScript, асинхронността се управлява основно чрез <strong>Promises</strong> (Обещания).</p>
-        </section>
-        
-        <section class="lesson-section">
-            <h2>1. Обещания (Promises)</h2>
-            <p>A <code class="inline">Promise</code> е специален JavaScript обект, който представлява бъдещия резултат от асинхронна операция. Той е като разписка, която получавате, когато поръчате нещо. Тази разписка (обещание) може да бъде в едно от три състояния:</p>
-            <ul>
-                <li><code class="inline">pending</code>: В очакване. Операцията все още не е приключила. (Чакате си пицата.)</li>
-                <li><code class="inline">fulfilled</code>: Успешно изпълнено. Операцията е приключила и имаме резултат. (Пицата пристигна!)</li>
-                <li><code class="inline">rejected</code>: Отхвърлено. Нещо се е объркало. (Няма продукти за вашата пица.)</li>
-            </ul>
-
-            <h3>Как работим с Promises?</h3>
-            <p>Използваме методите <code class="inline">.then()</code> за успешен резултат и <code class="inline">.catch()</code> за грешка.</p>
-             <pre><code>myPromise
-    .then(result => {
-        // Този код се изпълнява, ако обещанието е УСПЕШНО
-        console.log('Успех:', result);
-    })
-    .catch(error => {
-        // Този код се изпълнява, ако има ГРЕШКА
-        console.error('Грешка:', error);
-    });
-</code></pre>
-        </section>
-
-        <section class="lesson-section">
-            <h2>2. Звездата на шоуто: `fetch` API</h2>
-            <p><code class="inline">fetch()</code> е модерна функция в браузърите, която ни позволява да правим мрежови заявки (да "докосваме" данни от сървъри). Тя е базирана на Promises.</p>
-            <div class="analogy-box">
-                 <p><strong>Какво е API?</strong> Представете си, че сте в ресторант. Вие (клиентът) не отивате в кухнята (сървъра), за да си сготвите. Вместо това, използвате менюто (документация на API) и поръчвате на сервитьора (API). Сервитьорът взима заявката ви, предава я на кухнята и ви връща готовото ястие (данни). API е посредникът, който позволява на различни системи да комуникират.</p>
-            </div>
-            <h3>Пример: Да изтеглим случаен факт за котки</h3>
-            <p>Ще използваме безплатно API, наречено `catfact.ninja`.</p>
-             <pre><code>const apiUrl = 'https://catfact.ninja/fact';
-
-fetch(apiUrl)
-    .then(response => {
-        // Първата стъпка е да превърнем отговора в JSON формат
-        // Това също връща Promise!
-        return response.json(); 
-    })
-    .then(data => {
-        // Тук вече имаме достъп до реалните данни
-        console.log('Факт за котки:', data.fact);
-        document.getElementById('cat-fact').textContent = data.fact;
-    })
-    .catch(error => {
-        // Ако нещо се обърка с мрежата
-        console.error('Нещо се обърка:', error);
-        document.getElementById('cat-fact').textContent = 'Не успях да заредя факт :(';
-    });
-
-// Този ред ще се изпълни ВЕДНАГА, преди fetch да е приключил!
-console.log('Заявката е изпратена, чакаме отговор...');
-</code></pre>
-            <p id="cat-fact" style="font-style: italic; background: #eee; padding: 1rem;">Натиснете F12, за да видите резултата в конзолата.</p>
-            <div class="task">
-                <p><strong>👉 Малка задача 1:</strong> Използвайте API-то <code class="inline">https://api.coindesk.com/v1/bpi/currentprice.json</code>, за да изтеглите и изпишете в конзолата текущата цена на Bitcoin в USD.</p>
-            </div>
-        </section>
-        
-        <section class="lesson-section">
-            <h2>3. Модерният синтаксис: `async/await`</h2>
-            <p><code class="inline">async/await</code> е по-нов синтаксис, който ни позволява да пишем асинхронен код, който изглежда почти като синхронен. Той е просто "синтактична захар" върху Promises, но прави кода много по-четим.</p>
-            <h3>Правила:</h3>
-            <ul>
-                <li>За да използвате <code class="inline">await</code>, трябва да сте вътре във функция, декларирана с <code class="inline">async</code>.</li>
-                <li><code class="inline">await</code> "паузира" изпълнението на <code class="inline">async</code> функцията, докато Promise-ът не се изпълни, и връща резултата.</li>
-                <li>За обработка на грешки използваме стандартния <code class="inline">try...catch</code> блок.</li>
-            </ul>
-
-            <h3>Същият пример с `async/await`:</h3>
-            <pre><code>// Декларираме функцията като async
-async function getCatFact() {
-    try {
-        const apiUrl = 'https://catfact.ninja/fact';
-        
-        // "Паузираме", докато fetch не върне отговор
-        const response = await fetch(apiUrl); 
-        
-        // "Паузираме", докато отговорът не се превърне в JSON
-        const data = await response.json(); 
-        
-        console.log('Факт (от async/await):', data.fact);
-
-    } catch (error) {
-        // Хващаме всякакви грешки, които са се случили в try блока
-        console.error('Грешка при async/await:', error);
-    }
-}
-
-getCatFact(); // Извикваме функцията
-</code></pre>
-             <p>Както виждате, кодът е много по-линеен и лесен за проследяване!</p>
-             <div class="task">
-                <p><strong>👉 Малка задача 2:</strong> Пренапишете решението на задача 1 (за цената на Bitcoin), като използвате <code class="inline">async/await</code> и <code class="inline">try...catch</code>.</p>
-            </div>
-        </section>
-
-        <section class="lesson-section">
-            <h2>💡 Интересни факти</h2>
-            <ul>
-                <li><strong>AJAX - Дядото на `fetch`:</strong> Преди `fetch`, основният начин за правене на асинхронни заявки беше чрез <code class="inline">XMLHttpRequest</code>, често наричан AJAX (Asynchronous JavaScript and XML). Той беше много по-сложен за използване и е причината много програмисти да заобичат jQuery и неговия прост <code class="inline">$.ajax()</code> метод.</li>
-                <li><strong>Какво е JSON?</strong> JSON (JavaScript Object Notation) е лек текстов формат за обмен на данни. Въпреки че идва от JavaScript, днес той е универсален стандарт, използван от почти всички езици за програмиране. Той "детронира" XML като предпочитан формат за API-та.</li>
-                <li><strong>CORS - Най-честият проблем:</strong> Когато започнете да работите с API-та, рано или късно ще се сблъскате с CORS (Cross-Origin Resource Sharing) грешка. Това е механизъм за сигурност в браузърите, който не позволява на скрипт от един сайт (напр. `mysite.com`) да прави заявки към API на друг сайт (напр. `api.weather.com`), освен ако вторият сайт изрично не го е разрешил.</li>
-            </ul>
-        </section>
-
-        <section class="lesson-section final-tasks">
-            <h2>🏆 Самостоятелни Задачи за Упражнение</h2>
-            <p>Тествайте знанията си! Използвайте безплатни API-та като <a href="https://jsonplaceholder.typicode.com/" target="_blank">JSONPlaceholder</a> за задачите.</p>
-            
-            <div class="task-item"><h3 class="task-title">Задача 1: Изтегли потребители</h3><div class="solution"><p>Направете заявка към `https://jsonplaceholder.typicode.com/users` и изведете в конзолата масива с потребители.</p><pre><code>fetch('https://jsonplaceholder.typicode.com/users')
-    .then(res => res.json())
-    .then(users => console.log(users))
-    .catch(err => console.error(err));</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 2: Потребител в DOM</h3><div class="solution"><p>Изтеглете първия потребител (`/users/1`) и покажете името му в `<h1>` на страницата.</p><pre><code>async function showFirstUser() {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
-        const user = await response.json();
-        document.querySelector('#user-name').textContent = user.name;
-    } catch (e) { console.error(e); }
-}
-// HTML: &lt;h1 id="user-name"&gt;Зареждане...&lt;/h1&gt;
-showFirstUser();</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 3: Списък със задачи</h3><div class="solution"><p>Изтеглете всички задачи (`/todos`) и ги покажете като списък (`<ul>`) на страницата. Всяко `<li>` да съдържа заглавието на задачата (`title`).</p><pre><code>async function createTodoList() {
-    const todoList = document.querySelector('#todo-list');
-    const response = await fetch('https://jsonplaceholder.typicode.com/todos');
-    const todos = await response.json();
-    todos.forEach(todo => {
-        const li = document.createElement('li');
-        li.textContent = todo.title;
-        todoList.appendChild(li);
-    });
-}
-// HTML: &lt;ul id="todo-list"&gt;&lt;/ul&gt;
-createTodoList();</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 4: Обработка на грешка</h3><div class="solution"><p>Опитайте се да направите `fetch` заявка към несъществуващ URL (`.../невалиден-адрес`). Хванете грешката с `.catch()` и покажете подходящо съобщение на потребителя.</p><pre><code>fetch('https://jsonplaceholder.typicode.com/невалиден-адрес')
-    .then(res => res.json())
-    .catch(err => {
-        document.getElementById('error-box').textContent = 'Възникна грешка при зареждане на данните!';
-        console.error('Грешката е:', err);
-    });
-// HTML: &lt;div id="error-box" style="color:red;"&gt;&lt;/div&gt;</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 5: Снимка на куче</h3><div class="solution"><p>Използвайте API-то `https://dog.ceo/api/breeds/image/random`. То връща обект с URL на случайна снимка на куче в свойството `message`. Направете заявка и покажете снимката на страницата.</p><pre><code>async function showDog() {
-    const response = await fetch('https://dog.ceo/api/breeds/image/random');
-    const data = await response.json();
-    document.getElementById('dog-image').src = data.message;
-}
-// HTML: &lt;img id="dog-image" src="" alt="Случайно куче" width="300"&gt;
-showDog();</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 6: Индикация за зареждане</h3><div class="solution"><p>Преди да направите `fetch` заявка, покажете на страницата текст "Зареждане...". След като данните пристигнат (успешно или не), скрийте този текст. (Подсказка: използвайте `.finally()`).</p><pre><code>const loadingIndicator = document.getElementById('loading');
-loadingIndicator.style.display = 'block'; // Покажи
-fetch('https://jsonplaceholder.typicode.com/posts/1')
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.error(err))
-    .finally(() => {
-        loadingIndicator.style.display = 'none'; // Скрий винаги накрая
-    });
-// HTML: &lt;p id="loading"&gt;Зареждане...&lt;/p&gt;</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 7: Данни от поле</h3><div class="solution"><p>Направете поле за въвеждане и бутон. Когато потребителят въведе номер (напр. 5) и кликне бутона, направете заявка към `/posts/[номер]` и покажете заглавието на съответния пост.</p><pre><code>document.getElementById('fetch-btn').addEventListener('click', async () => {
-    const postId = document.getElementById('post-id').value;
-    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
-    const post = await response.json();
-    document.getElementById('post-title').textContent = post.title;
-});
-// HTML: &lt;input type="number" id="post-id"&gt; &lt;button id="fetch-btn"&gt;Изтегли&lt;/button&gt; &lt;h2 id="post-title"&gt;&lt;/h2&gt;</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 8: POST заявка</h3><div class="solution"><p>Направете `POST` заявка към `/posts`, за да създадете нов пост. Изпратете обект с `title`, `body` и `userId`. Изведете отговора от сървъра в конзолата. (Подсказка: `fetch` приема втори аргумент за опции).</p><pre><code>async function createPost() {
-    const newPost = { title: 'Моят нов пост', body: 'Това е съдържанието.', userId: 1 };
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-        method: 'POST',
-        body: JSON.stringify(newPost),
-        headers: { 'Content-type': 'application/json; charset=UTF-8' }
-    });
-    const createdPost = await response.json();
-    console.log('Създаден пост:', createdPost);
-}
-createPost();</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 9: Всички коментари за пост</h3><div class="solution"><p>Направете заявка към `/posts/1/comments`, за да изтеглите всички коментари за първия пост. Покажете имейла на всеки коментатор в списък.</p><pre><code>async function getComments() {
-    const list = document.getElementById('comments-list');
-    const res = await fetch('https://jsonplaceholder.typicode.com/posts/1/comments');
-    const comments = await res.json();
-    comments.forEach(comment => {
-        const li = document.createElement('li');
-        li.textContent = comment.email;
-        list.appendChild(li);
-    });
-}
-// HTML: &lt;ul id="comments-list"&gt;&lt;/ul&gt;
-getComments();</code></pre></div></div>
-            <div class="task-item"><h3 class="task-title">Задача 10: Верижна заявка</h3><div class="solution"><p>Първо, изтеглете информация за потребител с ID 2. След това, използвайте `id`-то на този потребител, за да изтеглите всички негови постове (`/users/[id]/posts`). Покажете броя на постовете, които е написал.</p><pre><code>async function getUserPosts() {
-    const userResponse = await fetch('https://jsonplaceholder.typicode.com/users/2');
-    const user = await userResponse.json();
-    
-    const postsResponse = await fetch(`https://jsonplaceholder.typicode.com/users/${user.id}/posts`);
-    const posts = await postsResponse.json();
-    
-    console.log(`${user.name} е написал ${posts.length} поста.`);
-}
-getUserPosts();</code></pre></div></div>
-            
-        </section>
-        
-        <div class="nav-buttons">
-            <a href="index3.html" class="nav-btn prev">&larr; Към предишния урок</a>
-            <a href="#" class="nav-btn">Към следващия урок &rarr;</a>
+          </section>
         </div>
 
+        <div class="content-card">
+          <section id="ways-to-add">
+            <h2>Трите начина да добавим JavaScript към HTML</h2>
+            <p>
+              Има три основни начина да "свържем" нашия JavaScript код с HTML
+              документа. Нека ги разгледаме един по един.
+            </p>
+
+            <h3>1. Вграден (Inline) JavaScript</h3>
+            <p>
+              Кодът се пише директно в атрибут на HTML елемент.
+              <strong>Избягвайте този метод</strong> в реални проекти, но е
+              добре да го разпознавате, защото е най-бързият начин за прост
+              тест.
+            </p>
+            <button
+              onclick="alert('Здравей, свят!')"
+              class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+            >
+              Натисни ме!
+            </button>
+            <h4>Кодът:</h4>
+            <pre><code>&lt;button onclick="alert('Здравей, свят!')"&gt;Натисни ме!&lt;/button&gt;</code></pre>
+            <h4>Обяснение ред по ред:</h4>
+            <ul>
+              <li>
+                <code>&lt;button&gt;...&lt;/button&gt;</code>: Стандартен HTML
+                таг, който създава кликаем бутон.
+              </li>
+              <li>
+                <code>onclick="..."</code>: Това е
+                <strong>атрибут за събитие</strong>. Казва на браузъра: "Когато
+                някой кликне (on click) на този елемент, изпълни JavaScript кода
+                в кавичките".
+              </li>
+              <li>
+                <code>alert('Здравей, свят!')</code>: Проста JavaScript функция,
+                която показва изскачащ прозорец (alert) със съобщение.
+              </li>
+            </ul>
+
+            <h3 class="!mt-12">
+              2. Вътрешен (Internal) JavaScript с тага &lt;script&gt;
+            </h3>
+            <p>
+              Много по-подреден начин. Кодът се поставя в
+              <code>&lt;script&gt;</code> таг, най-често точно преди затварящия
+              <code>&lt;/body&gt;</code> таг. Това гарантира, че целият HTML е
+              зареден, преди скриптът да се опита да го манипулира.
+            </p>
+
+            <h4>Пример: Промяна на текст с бутон</h4>
+            <p id="text-to-change" class="p-4 bg-gray-200 rounded-md border">
+              Този текст ще се промени.
+            </p>
+            <button
+              id="changeTextBtn"
+              class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-300 mt-2"
+            >
+              Промени текста
+            </button>
+            <h4>Кодът (HTML и JS):</h4>
+            <pre><code>&lt;!-- HTML част --&gt;
+&lt;p id="text-to-change"&gt;...&lt;/p&gt;
+&lt;button id="changeTextBtn"&gt;...&lt;/button&gt;
+
+&lt;!-- JavaScript част --&gt;
+&lt;script&gt;
+  const changeTextBtn = document.getElementById('changeTextBtn');
+  const textToChange = document.getElementById('text-to-change');
+
+  changeTextBtn.addEventListener('click', function() {
+    textToChange.textContent = 'Текстът се промени!';
+  });
+&lt;/script&gt;</code></pre>
+            <h4>Обяснение ред по ред:</h4>
+            <ul>
+              <li>
+                <code>const changeTextBtn = ...</code>: Създаваме константа
+                (променлива, която не се променя) и в нея запазваме HTML
+                елемента на бутона, който намираме по неговото <code>id</code>.
+              </li>
+              <li>
+                <code>document.getElementById('...')</code>: Метод, който
+                претърсва HTML и намира елемента с даденото уникално ID.
+              </li>
+              <li>
+                <code>changeTextBtn.addEventListener(...)</code>: Прикачаме
+                "слушател за събития" към бутона. Той чака за определено събитие
+                - в случая <code>'click'</code>.
+              </li>
+              <li>
+                <code>function() { ... }</code>: Това е анонимна функция
+                (функция без име), която се изпълнява, когато събитието се
+                случи.
+              </li>
+              <li>
+                <code>textToChange.textContent = '...'</code>: Променяме
+                текстовото съдържание на параграфа с нов текст.
+              </li>
+            </ul>
+
+            <h3 class="!mt-12">3. Външен (External) JavaScript файл</h3>
+            <p>
+              <strong>Това е най-добрата практика.</strong> Кодът се пише в
+              отделен файл (<code>.js</code>) и се свързва с HTML документа.
+            </p>
+            <h4>Кодът:</h4>
+            <pre><code>&lt;!-- Свързване на външен JS файл, най-добре преди &lt;/body&gt; --&gt;
+&lt;script src="път/до/вашия/script.js" defer&gt;&lt;/script&gt;</code></pre>
+            <h4>Обяснение ред по ред:</h4>
+            <ul>
+              <li>
+                <code>&lt;script&gt;...&lt;/script&gt;</code>: Тагът, който
+                казва на браузъра, че тук има скрипт.
+              </li>
+              <li>
+                <code>src="..."</code>: Атрибутът <code>src</code> (source)
+                указва пътя до външния <code>.js</code> файл.
+              </li>
+              <li>
+                <code>defer</code>: Изключително важен атрибут! Той казва на
+                браузъра да изтегли скрипта паралелно със зареждането на HTML,
+                но да го изпълни чак след като целият HTML е готов. Това
+                осигурява бързо зареждане на страницата.
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <section id="advanced" class="content-card advanced-box !p-8">
+          <h2 class="!mt-0 !border-blue-300">
+            За по-напреднали: Манипулация на DOM и Събития
+          </h2>
+          <p>
+            След като знаете как да изберете елемент по ID, е време да
+            разгледаме по-мощни инструменти.
+          </p>
+
+          <h3>По-мощни селектори: `querySelector`</h3>
+          <p>
+            <code>document.querySelector()</code> връща
+            <strong>първия</strong> елемент, който отговаря на подадения CSS
+            селектор. Много е гъвкав!
+          </p>
+          <h4>Интерактивен пример:</h4>
+          <p>
+            Напишете CSS селектор в полето. Опитайте с: <code>#advanced</code>,
+            <code>.fun-fact</code>, <code>h2</code>, <code>.task-box p</code>
+          </p>
+          <div class="flex items-center space-x-2 my-4">
+            <input
+              type="text"
+              id="selectorInput"
+              placeholder="Въведете CSS селектор..."
+              class="border p-2 rounded w-full"
+            />
+            <button
+              id="applyStyleBtn"
+              class="bg-sky-500 text-white font-bold py-2 px-4 rounded hover:bg-sky-700 transition"
+            >
+              Приложи
+            </button>
+          </div>
+
+          <h3>Създаване и премахване на елементи</h3>
+          <p>
+            JavaScript може да създава HTML елементи "от въздуха" и да ги добавя
+            към страницата.
+          </p>
+
+          <h4>Интерактивен To-Do List:</h4>
+          <div class="p-4 bg-white rounded-lg shadow-inner">
+            <div class="flex space-x-2">
+              <input
+                type="text"
+                id="todoInput"
+                placeholder="Нова задача..."
+                class="border p-2 rounded w-full"
+              />
+              <button
+                id="addTodoBtn"
+                class="bg-indigo-500 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700 whitespace-nowrap"
+              >
+                Добави +
+              </button>
+            </div>
+            <ul id="todoList" class="mt-4 space-y-2"></ul>
+          </div>
+
+          <h3>Разнообразие от събития</h3>
+          <p>
+            Освен <code>'click'</code>, има много други полезни събития:
+            <code>mouseover</code>, <code>keydown</code>, <code>input</code>,
+            <code>submit</code> и др.
+          </p>
+          <h4>Пример с `mouseover`:</h4>
+          <div
+            id="hoverBox"
+            class="animated-box flex items-center justify-center text-white text-center p-2"
+          >
+            Мини с мишката отгоре!
+          </div>
+        </section>
+
+        <div class="content-card">
+          <section id="final-tasks">
+            <h2>Време за практика! Самостоятелни задачи</h2>
+            <p>Кликнете върху всяка задача, за да видите условието.</p>
+
+            <div class="mt-6 space-y-2">
+              <details>
+                <summary>1. Смяна на цвят</summary>
+                <div class="task-content">
+                  Създайте бутон и параграф. При кликване на бутона, цветът на
+                  текста в параграфа трябва да стане червен. (<em
+                    >Подсказка:</em
+                  >
+                  <code>елемент.style.color = 'red';</code>)
+                </div>
+              </details>
+              <details>
+                <summary>2. Скриване и показване</summary>
+                <div class="task-content">
+                  Създайте картинка и един-единствен бутон "Превключи
+                  видимостта". При всяко кликване, картинката трябва да се
+                  скрива, ако е видима, и да се показва, ако е скрита. (<em
+                    >Подсказка:</em
+                  >
+                  Проверявайте текущата стойност на
+                  <code>element.style.display</code>).
+                </div>
+              </details>
+              <details>
+                <summary>3. Брояч на кликове</summary>
+                <div class="task-content">
+                  Създайте бутон и параграф "Брой кликове: 0". При всяко
+                  натискане на бутона, числото да се увеличава с 1.
+                </div>
+              </details>
+              <details>
+                <summary>4. Поздрави потребителя</summary>
+                <div class="task-content">
+                  Създайте поле за въвеждане и бутон. Когато потребителят въведе
+                  името си и натисне бутона, да се показва съобщение "Здравей,
+                  [името]!".
+                </div>
+              </details>
+              <details>
+                <summary>5. "Крушка"</summary>
+                <div class="task-content">
+                  Намерете URL-и на две картинки - светната и изгасена крушка.
+                  Направете един бутон, който "превключва" между двете картинки.
+                  (<em>Подсказка:</em> променяйте <code>src</code> атрибута на
+                  <code>&lt;img&gt;</code>).
+                </div>
+              </details>
+              <details>
+                <summary>6. Проверка на парола в реално време</summary>
+                <div class="task-content">
+                  Създайте две полета за парола. Докато потребителят пише,
+                  проверявайте дали съвпадат. Ако да, оцветете рамките им в
+                  зелено, ако не - в червено. (<em>Подсказка:</em> използвайте
+                  събитието <code>'input'</code> и
+                  <code>element.style.borderColor</code>).
+                </div>
+              </details>
+              <details>
+                <summary>7. Генератор на произволен цвят</summary>
+                <div class="task-content">
+                  Създайте бутон. При клик, фонът на страницата
+                  (<code>document.body</code>) да се сменя с произволен цвят.
+                </div>
+              </details>
+              <details>
+                <summary>8. По-добър To-Do List</summary>
+                <div class="task-content">
+                  Разширете примера от урока. Направете така, че при кликване
+                  върху вече добавена задача, тя да се зачертава, а при повторно
+                  кликване - зачертаването да изчезва.
+                </div>
+              </details>
+              <details>
+                <summary>9. Брояч на символи</summary>
+                <div class="task-content">
+                  Създайте <code>&lt;textarea&gt;</code> и параграф под него.
+                  Докато потребителят пише в полето, в параграфа да се изписва
+                  броят на въведените символи в реално време. (<em
+                    >Подсказка:</em
+                  >
+                  <code>'input'</code> събитие и
+                  <code>element.value.length</code>).
+                </div>
+              </details>
+              <details>
+                <summary>10. Клавиатурно събитие</summary>
+                <div class="task-content">
+                  Направете така, че когато потребителят натисне клавиша
+                  "Escape" където и да е на страницата, фонът да става
+                  светлосив. (<em>Подсказка:</em> слушайте за
+                  <code>'keydown'</code> събитие на <code>document</code> и
+                  проверявайте <code>event.key</code>).
+                </div>
+              </details>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <div class="nav-buttons-container">
+        <a href="index3.html" class="nav-button prev">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Към предишния урок
+        </a>
+        <a href="#" class="nav-button next">
+          Към следващия урок
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <footer class="text-center mt-8 text-gray-500">
+        <p>&copy; 2024 Интерактивен JavaScript Урок. инж. Пламена Янева</p>
+      </footer>
     </div>
 
+    <!-- Всички скриптове за интерактивност са тук -->
     <script>
-        // JS за анимации и интерактивност
-        const sections = document.querySelectorAll('.lesson-section');
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        sections.forEach(section => observer.observe(section));
-        
-        const taskTitles = document.querySelectorAll('.final-tasks .task-title');
-        taskTitles.forEach(title => {
-            title.addEventListener('click', () => {
-                title.classList.toggle('open');
-                const solution = title.nextElementSibling;
-                if (solution.style.maxHeight) {
-                    solution.style.maxHeight = null;
-                } else {
-                    solution.style.maxHeight = solution.scrollHeight + "px";
-                }
-            });
-        });
-        
-        // JS за примера с fetch
-        fetch('https://catfact.ninja/fact')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('cat-fact').textContent = data.fact;
-            })
-            .catch(error => {
-                document.getElementById('cat-fact').textContent = 'Не успях да заредя факт :(';
-            });
+      // Пример 1: Промяна на текст
+      const changeTextBtn = document.getElementById("changeTextBtn");
+      const textToChange = document.getElementById("text-to-change");
+      changeTextBtn.addEventListener("click", function () {
+        textToChange.textContent = "Уау! Текстът се промени с JavaScript!";
+        textToChange.style.color = "#16a34a";
+        textToChange.style.fontWeight = "bold";
+      });
+
+      // Секция за напреднали: querySelector
+      const selectorInput = document.getElementById("selectorInput");
+      const applyStyleBtn = document.getElementById("applyStyleBtn");
+      let lastStyledElement = null;
+      applyStyleBtn.addEventListener("click", function () {
+        if (lastStyledElement) {
+          lastStyledElement.style.outline = "";
+        }
+        const selector = selectorInput.value;
+        if (selector) {
+          try {
+            const selectedElement = document.querySelector(selector);
+            if (selectedElement) {
+              selectedElement.style.outline = "3px solid #ef4444";
+              lastStyledElement = selectedElement;
+              selectedElement.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+            } else {
+              alert("Не е намерен елемент с този селектор.");
+            }
+          } catch (e) {
+            alert("Невалиден CSS селектор.");
+          }
+        }
+      });
+
+      // Секция за напреднали: To-Do List
+      const todoInput = document.getElementById("todoInput");
+      const addTodoBtn = document.getElementById("addTodoBtn");
+      const todoList = document.getElementById("todoList");
+      function addTask() {
+        const taskText = todoInput.value.trim();
+        if (taskText !== "") {
+          const newLi = document.createElement("li");
+          newLi.className =
+            "p-3 bg-gray-100 rounded cursor-pointer hover:bg-gray-200 flex justify-between items-center transition-all duration-300";
+          const span = document.createElement("span");
+          span.textContent = taskText;
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "❌";
+          deleteBtn.className =
+            "text-xs hover:bg-red-200 p-1 rounded opacity-50 hover:opacity-100";
+          deleteBtn.addEventListener("click", function (event) {
+            event.stopPropagation();
+            newLi.classList.add("opacity-0", "translate-x-4");
+            setTimeout(() => todoList.removeChild(newLi), 300);
+          });
+          newLi.addEventListener("click", function () {
+            span.classList.toggle("line-through");
+            span.classList.toggle("text-gray-400");
+          });
+          newLi.appendChild(span);
+          newLi.appendChild(deleteBtn);
+          todoList.appendChild(newLi);
+          todoInput.value = "";
+        }
+      }
+      addTodoBtn.addEventListener("click", addTask);
+      todoInput.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+          addTask();
+        }
+      });
+
+      // Секция за напреднали: Mouseover
+      const hoverBox = document.getElementById("hoverBox");
+      hoverBox.addEventListener("mouseover", function () {
+        hoverBox.style.transform = "rotate(15deg) scale(1.2)";
+        hoverBox.style.backgroundColor = "#ec4899";
+        hoverBox.textContent = "Супер!";
+      });
+      hoverBox.addEventListener("mouseout", function () {
+        hoverBox.style.transform = "rotate(0deg) scale(1)";
+        hoverBox.style.backgroundColor = "#818cf8";
+        hoverBox.textContent = "Мини с мишката отгоре!";
+      });
+
+      // Функция за добавяне на бутони за копиране
+      document.querySelectorAll("pre").forEach((preElement) => {
+        const codeBlock = preElement.querySelector("code");
+        if (codeBlock) {
+          const copyBtn = document.createElement("button");
+          copyBtn.innerText = "Копирай";
+          copyBtn.className = "copy-btn";
+          preElement.appendChild(copyBtn);
+          copyBtn.addEventListener("click", () => {
+            const codeToCopy = codeBlock.innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = codeToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+              document.execCommand("copy");
+              copyBtn.innerText = "Копирано!";
+            } catch (err) {
+              copyBtn.innerText = "Грешка";
+              console.error("Неуспешно копиране: ", err);
+            }
+            document.body.removeChild(textArea);
+            setTimeout(() => {
+              copyBtn.innerText = "Копирай";
+            }, 2000);
+          });
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
