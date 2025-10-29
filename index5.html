@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Урок: Променливи в JavaScript - Ниво 5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        scroll-behavior: smooth;
+        background-color: #f3f4f6;
+        background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px),
+          radial-gradient(#d1d5db 0.5px, #f3f4f6 0.5px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+      }
+      .content-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05),
+          0 2px 4px -2px rgb(0 0 0 / 0.05);
+        margin-bottom: 2rem;
+      }
+      .fun-fact {
+        background-color: #fefce8;
+        border-left: 4px solid #eab308;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .warning-box {
+        background-color: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .scope-box {
+        background-color: #f0f9ff;
+        border: 1px solid #bae6fd;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-radius: 8px;
+      }
+      pre {
+        background-color: #1f2937;
+        color: #d1d5db;
+        padding: 1.5rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 0.9em;
+        position: relative;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background-color: #4b5563;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.8em;
+        opacity: 0.6;
+        transition: all 0.2s ease-in-out;
+      }
+      pre:hover .copy-btn {
+        opacity: 1;
+      }
+      .copy-btn:hover {
+        background-color: #6b7280;
+      }
+      .prose h2 {
+        margin-top: 2rem;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+        scroll-margin-top: 80px;
+      }
+      .prose h3 {
+        margin-top: 2.5rem;
+        scroll-margin-top: 80px;
+      }
+      .prose p {
+        text-align: justify;
+      } /* Двустранно подравняване */
+      .nav-item {
+        transition: all 0.2s ease-in-out;
+      }
+      .nav-item:hover {
+        transform: translateY(-2px);
+        color: #3b82f6;
+      }
+      .nav-buttons-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #d1d5db;
+      }
+      .nav-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+          0 1px 2px -1px rgb(0 0 0 / 0.1);
+      }
+      .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .nav-button.prev {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .nav-button.next {
+        background-color: #3b82f6;
+        color: white;
+      } /* Активиран бутон */
+      /* Styles for collapsible tasks */
+      details {
+        background-color: #fff;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        border: 1px solid #e5e7eb;
+        transition: box-shadow 0.3s ease;
+      }
+      details:hover {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      summary {
+        cursor: pointer;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary::after {
+        content: "▼";
+        font-size: 0.8em;
+        transition: transform 0.3s ease;
+      }
+      details[open] > summary {
+        border-bottom: 1px solid #e5e7eb;
+      }
+      details[open] > summary::after {
+        transform: rotate(180deg);
+      }
+      .task-content {
+        padding: 1.5rem;
+        font-size: 0.95em;
+      }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <nav class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="flex items-center justify-between h-16">
+          <span class="text-xl font-bold text-gray-800"
+            >JS Урок: Променливи</span
+          >
+          <div
+            class="flex flex-wrap justify-center space-x-4 md:space-x-8 text-gray-600 font-medium"
+          >
+            <a href="#what-is" class="nav-item">Какво е?</a>
+            <a href="#naming-rules" class="nav-item">Именуване</a>
+            <a href="#var-let-const" class="nav-item">var / let / const</a>
+            <a href="#data-types" class="nav-item">Типове данни</a>
+            <a href="#final-tasks" class="nav-item">Задачи</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+      <header class="text-center mb-12">
+        <div
+          class="inline-block bg-yellow-100 text-yellow-800 p-4 rounded-full mb-4 shadow-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            />
+          </svg>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+          Урок: Променливи в JavaScript
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">Как компютърът "помни" неща</p>
+      </header>
+
+      <main class="prose prose-lg max-w-none">
+        <div class="content-card">
+          <section id="what-is">
+            <h2>Какво е променлива?</h2>
+            <p>
+              Най-просто казано,
+              <b
+                >променливата е кутия с етикет, в която съхраняваме
+                информация</b
+              >. Когато пишем код, ние постоянно трябва да помним разни неща:
+              името на потребителя, брой точки в игра, текуща дата и т.н.
+              Променливите ни позволяват да дадем име на тази информация и да я
+              използваме по-късно.
+            </p>
+            <p>Процесът има две стъпки:</p>
+            <ol>
+              <li>
+                <b>Декларация (Declaration):</b> Казваме на JavaScript: "Хей,
+                създай ми нова празна кутия и ѝ сложи етикет 'име'".
+              </li>
+              <li>
+                <b>Присвояване (Assignment):</b> Казваме: "В кутията с етикет
+                'име' искам да сложиш стойността 'Иван'".
+              </li>
+            </ol>
+            <p>Можем да направим и двете на един ред:</p>
+            <h4>Кодът:</h4>
+            <pre><code>let myName = "Петър";
+console.log(myName); // Ще изпише "Петър" в конзолата
+
+myName = "Георги"; // Можем да сменим стойността
+console.log(myName); // Ще изпише "Георги"</code></pre>
+            <h4>Обяснение ред по ред:</h4>
+            <ul>
+              <li>
+                <code>let myName = "Петър";</code>: <code>let</code> е ключовата
+                дума за <b>декларация</b>. <code>myName</code> е етикетът
+                (името) на нашата "кутия". <code>=</code> е операторът за
+                <b>присвояване</b>. <code>"Петър"</code> е стойността, която
+                слагаме в кутията.
+              </li>
+              <li>
+                <code>console.log(myName);</code>: Показваме в конзолата това,
+                което в момента се намира в кутията <code>myName</code>.
+              </li>
+              <li>
+                <code>myName = "Георги";</code>: Тъй като кутията вече
+                съществува, не е нужно да пишем <code>let</code>. Просто
+                присвояваме нова стойност. Старата ("Петър") се изхвърля.
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <!-- НОВА СЕКЦИЯ -->
+        <div class="content-card">
+          <section id="naming-rules">
+            <h2>Правила за именуване на променливи</h2>
+            <p>
+              Когато давате "етикет" на вашата "кутия", трябва да спазвате
+              няколко правила. Името на променливата:
+            </p>
+            <ul>
+              <li>
+                Може да започва само с буква, долар (<code>$</code>) или долна
+                черта (<code>_</code>). <em>Не може</em> да започва с число.
+              </li>
+              <li>Може да съдържа букви, числа, долари и долни черти.</li>
+              <li>
+                Е <strong>чувствително към регистъра (case-sensitive)</strong>.
+                Това означава, че <code>myName</code> и <code>myname</code> са
+                две напълно различни променливи.
+              </li>
+              <li>
+                Не може да бъде някоя от "резервираните думи" на JavaScript
+                (<code>let</code>, <code>if</code>, <code>for</code>,
+                <code>function</code> и т.н.).
+              </li>
+            </ul>
+            <div class="fun-fact">
+              <p class="font-bold">
+                Най-добра практика: <code>camelCase</code>
+              </p>
+              <p>
+                В JavaScript (и много други езици) е прието променливите да се
+                именуват със стил, наречен "camelCase" (камилски регистър).
+                Първата дума е с малка буква, а всяка следваща започва с главна,
+                без интервали.
+              </p>
+              <p>
+                <b>Примери:</b> <code>let myVariableName;</code>,
+                <code>const userAge;</code>, <code>let scoreInGame;</code>
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="var-let-const">
+            <h2>
+              Трите ключови думи: <code>var</code>, <code>let</code> и
+              <code>const</code>
+            </h2>
+            <p>
+              В JavaScript има три начина да "създадем кутия" (да декларираме
+              променлива). Всеки има своите особености.
+            </p>
+
+            <h3>1. <code>let</code> (Модерният стандарт)</h3>
+            <p>
+              Това е предпочитаният начин в модерния JavaScript. Променливите,
+              създадени с <code>let</code>, могат да променят стойността си и
+              имат т.нар. <strong>блоков обхват (block scope)</strong>. Това
+              означава, че те съществуват само в рамките на къдравите скоби
+              <code>{ ... }</code>, в които са създадени.
+            </p>
+
+            <h3>2. <code>const</code> (За константи)</h3>
+            <p>
+              Използвайте <code>const</code>, когато знаете, че стойността
+              <b>никога няма да се променя</b>. Това прави кода по-сигурен и
+              лесен за разбиране. Опитът да промените
+              <code>const</code> променлива ще доведе до грешка.
+            </p>
+            <pre><code>const pi = 3.14159;
+pi = 3; // Това ще даде грешка!</code></pre>
+            <p>
+              <b>Важно:</b> Ако <code>const</code> е обект или масив, вие
+              <em>можете</em> да променяте съдържанието му, но не можете да му
+              присвоите изцяло нов обект/масив.
+            </p>
+
+            <h3>3. <code>var</code> (Старият начин)</h3>
+            <p>
+              Това е оригиналният начин за деклариране на променливи.
+              <code>var</code> има
+              <strong>функционален обхват (function scope)</strong>, което
+              означава, че "живее" в цялата функция, независимо от
+              <code>{ ... }</code> блоковете. Това често води до обърквания и
+              грешки.
+            </p>
+
+            <div class="warning-box">
+              <p class="font-bold">Защо да избягваме <code>var</code>?</p>
+              <p>
+                В днешно време се препоръчва
+                <strong
+                  >винаги да използвате <code>let</code> и
+                  <code>const</code></strong
+                >. <code>var</code> има странно поведение, наречено "hoisting"
+                (издигане), което може да направи кода ви непредсказуем. С
+                <code>let</code> и <code>const</code> кодът ви е по-чист и
+                по-малко податлив на грешки.
+              </p>
+            </div>
+
+            <h4>Интерактивен тест на обхват:</h4>
+            <div class="scope-box">
+              <p>
+                Натиснете бутона, за да видите разликата между
+                <code>let</code> и <code>var</code> в блок <code>{ ... }</code>.
+              </p>
+              <button
+                id="scopeTestBtn"
+                class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition mt-2"
+              >
+                Тествай обхвата
+              </button>
+              <div id="scopeResult" class="mt-4 p-4 bg-gray-100 rounded"></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="data-types">
+            <h2>Основни типове данни</h2>
+            <p>
+              JavaScript е "динамично типизиран" език. Това означава, че не е
+              нужно да казваме на "кутията" какъв тип информация ще държи. Тя
+              сама се адаптира.
+            </p>
+            <pre><code>let myVar = "Здрасти!"; // myVar е String (текст)
+myVar = 100;         // Сега myVar е Number (число)
+myVar = true;        // А сега е Boolean (логическо)</code></pre>
+            <p>Ето основните типове данни, които трябва да знаете:</p>
+            <ul>
+              <li>
+                <strong>String (Низ):</strong> Текст, винаги в кавички.
+                (<code>"Здрасти"</code>, <code>'123'</code>)
+              </li>
+              <li>
+                <strong>Number (Число):</strong> Всякакви числа.
+                (<code>10</code>, <code>3.14</code>, <code>-50</code>)
+              </li>
+              <li>
+                <strong>Boolean (Булев):</strong> Логически тип. Може да бъде
+                само <code>true</code> (вярно) или <code>false</code> (невярно).
+              </li>
+              <li>
+                <strong>Object (Обект):</strong> Колекция от данни. (<code
+                  >{ име: "Иван", възраст: 30 }</code
+                >)
+              </li>
+              <li>
+                <strong>Array (Масив):</strong> Специален вид обект - списък с
+                данни. (<code>[ "ябълки", "банани", "череши" ]</code>)
+              </li>
+              <li>
+                <strong>undefined:</strong> Стойността на "празна" кутия, която
+                е декларирана, но нищо не ѝ е присвоено.
+              </li>
+              <li>
+                <strong>null:</strong> Представлява нарочно зададена "липса на
+                стойност".
+              </li>
+            </ul>
+
+            <!-- НОВА ПОДСЕКЦИЯ -->
+            <h3>Шаблонни низове (Template Literals)</h3>
+            <p>
+              Това е модерен и по-удобен начин за работа с низове, който
+              използва (<code>`</code>) (обратни кавички) вместо обикновени. Те
+              позволяват лесно да "вграждаме" променливи в текста, използвайки
+              синтаксиса <code>${...}</code>.
+            </p>
+            <pre><code>const name = "Мария";
+const age = 28;
+
+// Старият начин:
+const greetingOld = "Здравей, " + name + "! Ти си на " + age + " години.";
+
+// Новият начин (Template Literal):
+const greetingNew = \`Здравей, ${name}! Ти си на ${age} години.\`;
+
+console.log(greetingNew); // Ще изпише същото</code></pre>
+
+            <!-- НОВА ПОДСЕКЦИЯ -->
+            <h3 id="coercion">
+              Автоматично преобразуване на типове (Type Coercion)
+            </h3>
+            <p>
+              JavaScript често се опитва да бъде "услужлив" и автоматично
+              преобразува типовете данни, когато извършвате операции с тях. Това
+              може да бъде колкото полезно, толкова и объркващо.
+            </p>
+            <pre><code>let result1 = 5 + "5";   // "5" е низ, JS превръща 5 в низ
+// Резултат: "55" (низ)
+
+let result2 = 10 - "5";  // "5" е низ, но '-' е само за числа
+                         // JS превръща "5" в число
+// Резултат: 5 (число)</code></pre>
+            <div class="warning-box">
+              <p class="font-bold">Внимание!</p>
+              <p>
+                Това автоматично преобразуване е една от най-големите
+                "странности" на JavaScript. Винаги бъдете наясно с какъв тип
+                данни работите, за да избегнете неочаквани резултати. Когато
+                събирате стойности от HTML полета, те <em>винаги</em> идват като
+                низове (string)!
+              </p>
+            </div>
+
+            <h4>Интерактивен детектор на типове:</h4>
+            <p>
+              Напишете стойност в полето и вижте какъв тип данни ще "види"
+              JavaScript.
+            </p>
+            <div class="flex items-center space-x-2 my-4">
+              <input
+                type="text"
+                id="typeInput"
+                placeholder="Напиши 'Здрасти', 123, true..."
+                class="border p-2 rounded w-full"
+              />
+              <button
+                id="checkTypeBtn"
+                class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 whitespace-nowrap"
+              >
+                Провери типа
+              </button>
+            </div>
+            <p id="typeResult" class="font-bold text-lg"></p>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="final-tasks">
+            <h2>Време за практика! Задачи с променливи</h2>
+            <p class="!text-left">
+              Кликнете върху всяка задача, за да видите условието.
+            </p>
+
+            <div class="mt-6 space-y-2">
+              <details>
+                <summary>1. Декларация</summary>
+                <div class="task-content">
+                  Декларирайте променлива с име <code>myName</code> и ѝ
+                  присвоете вашето име.
+                </div>
+              </details>
+              <details>
+                <summary>2. Константа</summary>
+                <div class="task-content">
+                  Декларирайте <strong>константа</strong> с име
+                  <code>yearOfBirth</code> и ѝ присвоете вашата година на
+                  раждане. Опитайте да ѝ присвоите нова стойност и вижте каква
+                  грешка дава конзолата.
+                </div>
+              </details>
+              <details>
+                <summary>3. Събиране на числа</summary>
+                <div class="task-content">
+                  Създайте две променливи, <code>num1</code> и
+                  <code>num2</code>, и им присвоете стойности 10 и 20. Създайте
+                  трета променлива <code>sum</code>, която е равна на сбора им.
+                  Изпишете <code>sum</code> в конзолата.
+                </div>
+              </details>
+              <details>
+                <summary>4. Свързване на низове (Template Literal)</summary>
+                <div class="task-content">
+                  Създайте променливи <code>firstName</code> и
+                  <code>lastName</code>. Създайте трета променлива
+                  <code>fullName</code>, като използвате
+                  <strong>template literal</strong> (с обратни кавички ``), за
+                  да ги съедините с интервал по средата.
+                </div>
+              </details>
+              <details>
+                <summary>5. Булева логика</summary>
+                <div class="task-content">
+                  Създайте променлива <code>isLearning</code> и ѝ присвоете
+                  стойност <code>true</code>. Създайте променлива
+                  <code>isTired</code> и ѝ присвоете <code>false</code>.
+                </div>
+              </details>
+              <details>
+                <summary>6. Размяна на стойности</summary>
+                <div class="task-content">
+                  Създайте две променливи: <code>let a = 5;</code> и
+                  <code>let b = 10;</code>. Без да пишете нови числа, а само с
+                  помощта на трета, временна променлива (<code>let temp</code>),
+                  разменете стойностите им, така че <code>a</code> да стане 10,
+                  а <code>b</code> да стане 5.
+                </div>
+              </details>
+              <details>
+                <summary>7. Създаване на обект</summary>
+                <div class="task-content">
+                  Създайте обект (<code>const car</code>) с три свойства:
+                  <code>make</code> (марка), <code>model</code> (модел) и
+                  <code>year</code> (година).
+                </div>
+              </details>
+              <details>
+                <summary>8. Създаване на масив</summary>
+                <div class="task-content">
+                  Създайте масив с име <code>shoppingList</code>, който съдържа
+                  3 ваши любими продукта за пазаруване.
+                </div>
+              </details>
+              <details>
+                <summary>9. Type Coercion проблем</summary>
+                <div class="task-content">
+                  Какъв ще е резултатът от <code>"10" + 20</code>? А от
+                  <code>"10" - 5</code>? Проверете в конзолата и обяснете защо
+                  се получава така.
+                </div>
+              </details>
+              <details>
+                <summary>10. Изчисляване на възраст</summary>
+                <div class="task-content">
+                  Създайте константа <code>currentYear</code> с текущата година.
+                  Използвайки променливата <code>yearOfBirth</code> от задача 2,
+                  създайте нова променлива <code>age</code>, която изчислява
+                  вашата възраст.
+                </div>
+              </details>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <div class="nav-buttons-container">
+        <a href="index4.html" class="nav-button prev">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Към предишния урок
+        </a>
+        <a href="urok_javascript_operators.html" class="nav-button next">
+          Към следващия урок
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <footer class="text-center mt-8 text-gray-500">
+        <p>&copy; 2024 Интерактивен JavaScript Урок. инж. Пламена Янева</p>
+      </footer>
+    </div>
+
+    <!-- Всички скриптове за интерактивност са тук -->
+    <script>
+      // Интерактивен тест за обхват
+      const scopeTestBtn = document.getElementById("scopeTestBtn");
+      const scopeResult = document.getElementById("scopeResult");
+      scopeTestBtn.addEventListener("click", function () {
+        let letMessage = "let 'a' е дефинирано.";
+        var varMessage = "var 'b' е дефинирано.";
+
+        if (true) {
+          let a = "Аз съм 'let'";
+          var b = "Аз съм 'var'";
+        }
+
+        try {
+          console.log(a); // Това ще даде грешка
+        } catch (e) {
+          letMessage = "Грешка: 'a' (с let) не съществува извън { ... } блока!";
+        }
+
+        try {
+          varMessage =
+            "Успех: 'b' (с var) съществува извън { ... } блока. Стойност: " + b;
+        } catch (e) {
+          // Няма да влезе тук
+        }
+
+        scopeResult.innerHTML = `<p class="text-red-600">${letMessage}</p><p class="text-green-600">${varMessage}</p>`;
+      });
+
+      // Интерактивен детектор на типове
+      const typeInput = document.getElementById("typeInput");
+      const checkTypeBtn = document.getElementById("checkTypeBtn");
+      const typeResult = document.getElementById("typeResult");
+
+      checkTypeBtn.addEventListener("click", function () {
+        let value = typeInput.value;
+
+        // Опитваме се да го конвертираме към по-специфични типове
+        if (value.toLowerCase() === "true") {
+          typeResult.textContent = `Тип: boolean (Стойност: true)`;
+        } else if (value.toLowerCase() === "false") {
+          typeResult.textContent = `Тип: boolean (Стойност: false)`;
+        } else if (value === "null") {
+          typeResult.textContent = `Тип: object (Стойност: null - това е специален случай!)`;
+        } else if (value === "undefined") {
+          typeResult.textContent = `Тип: undefined`;
+        } else if (value.trim() === "") {
+          typeResult.textContent = `Тип: string (празен низ)`;
+        } else if (!isNaN(Number(value))) {
+          // isNaN (Is Not a Number)
+          typeResult.textContent = `Тип: number (Стойност: ${Number(value)})`;
+        } else {
+          typeResult.textContent = `Тип: string (Стойност: "${value}")`;
+        }
+      });
+
+      // Функция за добавяне на бутони за копиране
+      document.querySelectorAll("pre").forEach((preElement) => {
+        const codeBlock = preElement.querySelector("code");
+        if (codeBlock) {
+          const copyBtn = document.createElement("button");
+          copyBtn.innerText = "Копирай";
+          copyBtn.className = "copy-btn";
+          preElement.appendChild(copyBtn);
+          copyBtn.addEventListener("click", () => {
+            const codeToCopy = codeBlock.innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = codeToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+              document.execCommand("copy");
+              copyBtn.innerText = "Копирано!";
+            } catch (err) {
+              copyBtn.innerText = "Грешка";
+              console.error("Неуспешно копиране: ", err);
+            }
+            document.body.removeChild(textArea);
+            setTimeout(() => {
+              copyBtn.innerText = "Копирай";
+            }, 2000);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
