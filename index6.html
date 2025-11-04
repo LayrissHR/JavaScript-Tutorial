@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Урок: Условни оператори в JavaScript - Ниво 7</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+          font-family: 'Inter', sans-serif;
+          scroll-behavior: smooth;
+          background-color: #f3f4f6;
+          background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px), radial-gradient(#d1d5db 0.5px, #f3f4f6 0.5px);
+          background-size: 20px 20px;
+          background-position: 0 0, 10px 10px;
+      }
+      .content-card {
+          background-color: white;
+          border-radius: 12px;
+          padding: 2rem;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+          margin-bottom: 2rem;
+      }
+      .fun-fact {
+          background-color: #f0f9ff;
+          border-left: 4px solid #38bdf8;
+          padding: 1rem;
+          margin: 1rem 0;
+          border-radius: 0 8px 8px 0;
+      }
+      .warning-box {
+          background-color: #fffbeb;
+          border-left: 4px solid #f59e0b;
+          padding: 1rem;
+          margin: 1rem 0;
+          border-radius: 0 8px 8px 0;
+      }
+      pre {
+          background-color: #1f2937;
+          color: #d1d5db;
+          padding: 1.5rem;
+          border-radius: 8px;
+          overflow-x: auto;
+          font-size: 0.9em;
+          position: relative;
+      }
+      .copy-btn {
+          position: absolute; top: 12px; right: 12px; background-color: #4b5563; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.8em; opacity: 0.6; transition: all 0.2s ease-in-out;
+      }
+      pre:hover .copy-btn { opacity: 1; }
+      .copy-btn:hover { background-color: #6b7280; }
+      .prose h2 { margin-top: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; scroll-margin-top: 80px; }
+      .prose h3 { margin-top: 2.5rem; scroll-margin-top: 80px; }
+      .prose p { text-align: justify; }
+      .prose li { text-align: justify; }
+      .nav-item { transition: all 0.2s ease-in-out; }
+      .nav-item:hover { transform: translateY(-2px); color: #3b82f6; }
+      .nav-buttons-container { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #d1d5db; }
+      .nav-button { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s ease-in-out; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); }
+      .nav-button:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+      .nav-button.prev { background-color: #3b82f6; color: white; }
+      .nav-button.next { background-color: #3b82f6; color: white; }
+      /* Styles for collapsible tasks */
+      details { background-color: #fff; border-radius: 8px; margin-bottom: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); border: 1px solid #e5e7eb; transition: box-shadow 0.3s ease; }
+      details:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+      summary { cursor: pointer; padding: 1rem 1.5rem; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: '▼'; font-size: 0.8em; transition: transform 0.3s ease; }
+      details[open] > summary { border-bottom: 1px solid #e5e7eb;}
+      details[open] > summary::after { transform: rotate(180deg); }
+      .task-content { padding: 1.5rem; font-size: 0.95em; }
+      /* Table styles */
+      .table-wrapper { overflow-x: auto; margin-top: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+      table { min-width: 100%; divide-y divide-gray-200; }
+      thead { background-color: #f9fafb; }
+      th { padding: 0.75rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #4b5563; text-transform: uppercase; letter-spacing: 0.05em; }
+      tbody { background-color: white; divide-y divide-gray-200; }
+      td { padding: 0.75rem 1.5rem; font-size: 0.9rem; color: #1f2937; }
+      td code { background-color: #f3f4f6; padding: 0.125rem 0.375rem; border-radius: 4px; font-family: monospace; font-size: 0.95em; }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <nav class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="flex items-center justify-between h-16">
+          <span class="text-xl font-bold text-gray-800">JS Урок: Условия</span>
+          <div
+            class="flex flex-wrap justify-center space-x-4 md:space-x-8 text-gray-600 font-medium"
+          >
+            <a href="#what-is" class="nav-item">Какво е?</a>
+            <a href="#if-else" class="nav-item">if / else</a>
+            <a href="#operators" class="nav-item">Оператори</a>
+            <a href="#switch" class="nav-item">switch</a>
+            <a href="#final-tasks" class="nav-item">Задачи</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+      <header class="text-center mb-12">
+        <div
+          class="inline-block bg-green-100 text-green-800 p-4 rounded-full mb-4 shadow-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 6V4m0 2v10m0-10h5.586a1 1 0 01.707.293l2.414 2.414a1 1 0 01.293.707V16m-8 4v-2m0 2H6a2 2 0 01-2-2V6a2 2 0 012-2h6.586a1 1 0 01.707.293l2.414 2.414a1 1 0 01.293.707V16m-8 4h-2a2 2 0 01-2-2V6a2 2 0 012-2h6.586a1 1 0 01.707.293l2.414 2.414a1 1 0 01.293.707V16m-8 4v-2m0 2H6"
+            />
+          </svg>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+          Урок: Условни оператори в JavaScript
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">
+          Научете кода си как да взима решения
+        </p>
+      </header>
+
+      <main class="prose prose-lg max-w-none">
+        <div class="content-card">
+          <section id="what-is">
+            <h2>Какво е условен оператор?</h2>
+            <p>
+              Досега нашият код се изпълняваше ред по ред, отгоре надолу, без да
+              се замисля. Условните оператори ни позволяват да променим това. Те
+              са като <b>кръстопът за нашия код</b>. Ние му задаваме въпрос
+              (условие) и ако отговорът е "Да" (<code>true</code>), той тръгва
+              по един път (изпълнява един код), а ако е "Не"
+              (<code>false</code>), тръгва по друг.
+            </p>
+            <p>
+              Въпросът, който задаваме, винаги трябва да има отговор "Да" или
+              "Не" (<code>true</code> или <code>false</code>). Например:
+              "По-голямо ли е числото 5 от 3?" (Да), "Равно ли е името на
+              потребителя на 'Иван'?" (Може би да, може би не).
+            </p>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="if-else">
+            <h2>
+              Основата: <code>if</code>, <code>else if</code>, и
+              <code>else</code>
+            </h2>
+            <p>
+              Това е най-често срещаната и важна условна конструкция. Тя се чете
+              почти като на български: "Ако..., в противен случай ако..., в
+              противен случай..."
+            </p>
+
+            <h3>1. <code>if</code> (Ако)</h3>
+            <p>
+              Изпълнява код <b>само ако</b> условието в скобите
+              <code>()</code> е вярно (<code>true</code>).
+            </p>
+            <pre><code>let age = 20;
+
+if (age >= 18) {
+  console.log("Вие сте пълнолетен!");
+}
+// Резултат: "Вие сте пълнолетен!"</code></pre>
+            <h4>Обяснение ред по ред:</h4>
+            <ul>
+              <li>
+                <code>let age = 20;</code>: Създаваме променлива
+                <code>age</code> със стойност 20.
+              </li>
+              <li>
+                <code>if (age >= 18) { ... }</code>: "Ако стойността в
+                <code>age</code> (20) е по-голяма или равна на 18..."
+              </li>
+              <li>
+                <code>console.log(...)</code>: Тъй като 20 е по-голямо от 18
+                (<code>true</code>), кодът в къдравите скоби <code>{ }</code> се
+                изпълнява.
+              </li>
+            </ul>
+
+            <h3>2. <code>if ... else</code> (Ако ... в противен случай)</h3>
+            <p>
+              <code>else</code> улавя всички случаи, в които
+              <code>if</code> условието е било <code>false</code>.
+            </p>
+            <pre><code>let age = 15;
+
+if (age >= 18) {
+  console.log("Вие сте пълнолетен!");
+} else {
+  console.log("Вие сте непълнолетен.");
+}
+// Резултат: "Вие сте непълнолетен."</code></pre>
+            <h4>Обяснение:</h4>
+            <p>
+              Тук <code>age</code> е 15. Условието <code>(15 >= 18)</code> е
+              <code>false</code>. Затова кодът в <code>if</code> блока се
+              пропуска и се изпълнява кодът в <code>else</code> блока.
+            </p>
+
+            <h3>
+              3. <code>if ... else if ... else</code> (Верига от проверки)
+            </h3>
+            <p>Позволява ни да проверяваме няколко условия едно след друго.</p>
+            <pre><code>let temperature = 15;
+
+if (temperature > 25) {
+  console.log("Времето е горещо, облечете тениска.");
+} else if (temperature > 10) {
+  console.log("Времето е приятно, вземете си яке.");
+} else {
+  console.log("Времето е студено, облечете се дебело.");
+}
+// Резултат: "Времето е приятно, вземете си яке."</code></pre>
+            <h4>Обяснение:</h4>
+            <ul>
+              <li>
+                Проверява <code>(15 > 25)</code>. Това е <code>false</code>.
+                Пропуска <code>if</code> блока.
+              </li>
+              <li>
+                Преминава към <code>else if</code>. Проверява
+                <code>(15 > 10)</code>. Това е <code>true</code>!
+              </li>
+              <li>
+                Изпълнява кода в <code>else if</code> блока и изписва "Времето е
+                приятно...".
+              </li>
+              <li>
+                Тъй като е намерил вярно условие, той <b>игнорира</b> следващия
+                <code>else</code> блок и излиза от цялата конструкция.
+              </li>
+            </ul>
+
+            <h4>Интерактивен "Пропуск за клуба":</h4>
+            <div class="bg-gray-100 p-4 rounded-lg">
+              <label for="ageInput" class="font-bold"
+                >Въведете вашата възраст:</label
+              >
+              <input
+                type="number"
+                id="ageInput"
+                placeholder="Напр. 25"
+                class="border p-2 rounded w-full mt-2"
+              />
+              <button
+                id="checkAgeBtn"
+                class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition mt-3"
+              >
+                Провери
+              </button>
+              <p id="ageResult" class="font-bold text-lg mt-3"></p>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="operators">
+            <h2>Оператори за сравнение и логически оператори</h2>
+            <p>
+              За да "задаваме въпроси" в нашите <code>if</code>-ове, ние се
+              нуждаем от специални оператори. Ето най-важните от тях в една
+              таблица:
+            </p>
+
+            <div class="table-wrapper">
+              <table>
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th>Оператор</th>
+                    <th>Име</th>
+                    <th>Обяснение</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr>
+                    <td><code>==</code></td>
+                    <td>Равно (с преобразуване)</td>
+                    <td>
+                      Проверява дали стойностите са равни (напр.
+                      <code>5 == "5"</code> е <b>true</b>).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>===</code></td>
+                    <td>Строго равно</td>
+                    <td>
+                      Проверява дали стойностите <b>И</b> типовете са равни
+                      (напр. <code>5 === "5"</code> е <b>false</b>).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>!=</code></td>
+                    <td>Неравно (с преобразуване)</td>
+                    <td>Проверява дали стойностите са различни.</td>
+                  </tr>
+                  <tr>
+                    <td><code>!==</code></td>
+                    <td>Строго неравно</td>
+                    <td>
+                      Проверява дали стойностите <b>ИЛИ</b> типовете са
+                      различни.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>></code></td>
+                    <td>По-голямо от</td>
+                    <td>
+                      Проверява дали лявата стойност е по-голяма от дясната.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code><</code></td>
+                    <td>По-малко от</td>
+                    <td>
+                      Проверява дали лявата стойност е по-малка от дясната.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>>=</code></td>
+                    <td>По-голямо или равно</td>
+                    <td>
+                      Проверява дали лявата стойност е по-голяма или равна на
+                      дясната.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code><=</code></td>
+                    <td>По-малко или равно</td>
+                    <td>
+                      Проверява дали лявата стойност е по-малка или равна на
+                      дясната.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>&&</code></td>
+                    <td>Логическо "И" (AND)</td>
+                    <td>
+                      Връща <code>true</code>, само ако <b>и двете</b> условия
+                      отляво и отдясно са верни.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>||</code></td>
+                    <td>Логическо "ИЛИ" (OR)</td>
+                    <td>
+                      Връща <code>true</code>, ако <b>поне едно</b> от условията
+                      е вярно.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>!</code></td>
+                    <td>Логическо "НЕ" (NOT)</td>
+                    <td>
+                      Обръща стойността: <code>!true</code> става
+                      <code>false</code>, а <code>!false</code> става
+                      <code>true</code>.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="warning-box">
+              <p class="font-bold">
+                Най-важното правило: <code>==</code> срещу <code>===</code>
+              </p>
+              <p>
+                Това е най-голямата уловка за начинаещи в JavaScript. Операторът
+                <code>==</code> се опитва да преобразува типовете, преди да ги
+                сравни, което води до странни резултати:
+              </p>
+              <pre><code>console.log(5 == "5"); // Резултат: true (странно!)</code></pre>
+              <p>
+                Операторът <code>===</code> (с три знака "равно") е стриктен.
+                Той проверява дали стойностите и техните типове са
+                <b>напълно еднакви</b>:
+              </p>
+              <pre><code>console.log(5 === "5"); // Резултат: false (логично!)</code></pre>
+              <p>
+                <b>Златно правило:</b> Винаги използвайте <code>===</code> и
+                <code>!==</code>, освен ако нямате <em>много</em> основателна
+                причина да не го правите.
+              </p>
+            </div>
+
+            <pre><code>let age = 25;
+let hasTicket = true;
+
+// && (И)
+if (age > 18 && hasTicket === true) {
+  console.log("Може да влезете."); // Ще се изпълни
+}
+
+// || (ИЛИ)
+let isRaining = false;
+let isSnowing = true;
+if (isRaining === true || isSnowing === true) {
+    console.log("Вземете си чадър или шал."); // Ще се изпълни
+}
+
+// ! (НЕ)
+let isLoggedIn = false;
+if (!isLoggedIn) { // Чете се: "Ако НЕ Е логнат"
+    console.log("Моля, влезте в профила си."); // Ще се изпълни
+}</code></pre>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="switch">
+            <h2>Алтернативата: <code>switch</code> (Превключвател)</h2>
+            <p>
+              Понякога имаме дълга верига от <code>else if</code>, която
+              проверява една и съща променлива за различни точни стойности. В
+              такъв случай, <code>switch</code> е по-четим и подреден начин.
+            </p>
+            <p>
+              Представете си го като разпределително табло. Подавате му една
+              променлива и то "превключва" към правилния "бушон"
+              (<code>case</code>).
+            </p>
+
+            <h4>Интерактивен "Дни от седмицата":</h4>
+            <div class="bg-gray-100 p-4 rounded-lg">
+              <label for="dayInput" class="font-bold"
+                >Въведете ден от седмицата (напр. "Понеделник"):</label
+              >
+              <input
+                type="text"
+                id="dayInput"
+                class="border p-2 rounded w-full mt-2"
+              />
+              <button
+                id="checkDayBtn"
+                class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition mt-3"
+              >
+                Какво да правя?
+              </button>
+              <p id="dayResult" class="font-bold text-lg mt-3"></p>
+            </div>
+
+            <h4>Кодът зад примера:</h4>
+            <pre><code>let day = "Сряда"; // Взето от полето
+let activity;
+
+switch (day) {
+  case "Понеделник":
+    activity = "Начало на работната седмица.";
+    break; // break е КРИТИЧНО! Спира изпълнението.
+  case "Вторник":
+  case "Сряда":
+  case "Четвъртък":
+    activity = "Работа и учене.";
+    break;
+  case "Петък":
+    activity = "Почти е уикенд!";
+    break;
+  case "Събота":
+  case "Неделя":
+    activity = "Време за почивка!";
+    break;
+  default:
+    activity = "Моля, въведете валиден ден.";
+}
+// activity ще бъде "Работа и учене."</code></pre>
+            <h4>Обяснение ред по ред:</h4>
+            <ul>
+              <li>
+                <code>switch (day) { ... }</code>: Започваме конструкцията. Ще
+                проверяваме променливата <code>day</code>.
+              </li>
+              <li>
+                <code>case "Понеделник":</code>: "В случай, че
+                <code>day</code> е равно на 'Понеделник'..."
+              </li>
+              <li><code>activity = ...</code>: Присвояваме стойност.</li>
+              <li>
+                <code>break;</code>: <b>Най-важната част!</b> Казва на
+                <code>switch</code>-а: "Спри дотук, свършихме работа!". Ако го
+                пропуснем, кодът ще продължи да се изпълнява и в следващия
+                <code>case</code>!
+              </li>
+              <li>
+                <code>case "Вторник": case "Сряда":...</code>: Можем да
+                групираме няколко <code>case</code>-а, за да изпълнят един и същ
+                код.
+              </li>
+              <li>
+                <code>default:</code>: Това е като <code>else</code>. Изпълнява
+                се, ако нито един от <code>case</code>-овете не е бил верен.
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="final-tasks">
+            <h2>Време за практика! Задачи с условия</h2>
+            <p class="!text-left">
+              Кликнете върху всяка задача, за да видите условието.
+            </p>
+
+            <div class="mt-6 space-y-2">
+              <details>
+                <summary>1. Четно или нечетно?</summary>
+                <div class="task-content">
+                  Създайте променлива <code>number</code>. Напишете
+                  <code>if-else</code>, което да изписва в конзолата "Числото е
+                  четно" или "Числото е нечетно". (<em>Подсказка:</em>
+                  Използвайте оператора за остатък <code>%</code>.
+                  <code>number % 2 === 0</code> е вярно, ако числото е четно).
+                </div>
+              </details>
+              <details>
+                <summary>2. Оценка с думи</summary>
+                <div class="task-content">
+                  Създайте променлива <code>grade</code> (число от 2 до 6).
+                  Напишете верига от <code>if-else if-else</code>, която изписва
+                  "Слаб", "Среден", "Добър", "Мн. Добър" или "Отличен" спрямо
+                  оценката.
+                </div>
+              </details>
+              <details>
+                <summary>3. Логин форма</summary>
+                <div class="task-content">
+                  Създайте две променливи:
+                  <code>let username = "admin";</code> и
+                  <code>let password = "12345";</code>. Напишете
+                  <code>if</code> с <code>&&</code>, който проверява дали И
+                  потребителското име, И паролата са верни, и изписва "Добре
+                  дошъл, admin!".
+                </div>
+              </details>
+              <details>
+                <summary>4. Гост-потребител</summary>
+                <div class="task-content">
+                  Създайте променлива <code>let userRole = "guest";</code>.
+                  Напишете <code>if</code> с <code>||</code>, което проверява
+                  дали <code>userRole</code> е "admin" <b>ИЛИ</b> "editor" и
+                  изписва "Имате права за редактиране".
+                </div>
+              </details>
+              <details>
+                <summary>5. Светофар</summary>
+                <div class="task-content">
+                  Създайте променлива <code>let lightColor = "yellow";</code>.
+                  Напишете <code>switch</code> конструкция, която за "red"
+                  изписва "Спри!", за "yellow" - "Внимание!", а за "green" -
+                  "Премини!".
+                </div>
+              </details>
+              <details>
+                <summary>6. Тернарен оператор (за напреднали)</summary>
+                <div class="task-content">
+                  Тернарният оператор е кратък <code>if-else</code>. Синтаксисът
+                  е: <code>условие ? ако_е_true : ако_е_false;</code>. Опитайте
+                  да пренапишете задача 1 (четно/нечетно) с тернарен оператор.
+                </div>
+              </details>
+              <details>
+                <summary>7. Проверка за `null` или `undefined`</summary>
+                <div class="task-content">
+                  Създайте променлива <code>let name;</code> (без стойност).
+                  Напишете <code>if</code>, което проверява
+                  <code>if (name === null || name === undefined)</code> и
+                  изписва "Липсва име".
+                </div>
+              </details>
+              <details>
+                <summary>8. `switch` с числа</summary>
+                <div class="task-content">
+                  Пренапишете задача 2 (оценките) с помощта на
+                  <code>switch</code>. (<em>Подсказка:</em>
+                  <code>switch (true) { case (grade === 2): ... }</code> е трик,
+                  който работи, но помислете дали е по-четимо от
+                  <code>if-else</code>).
+                </div>
+              </details>
+              <details>
+                <summary>9. Проверка на дължина на име</summary>
+                <div class="task-content">
+                  Създайте променлива <code>username</code>. Напишете
+                  <code>if-else</code>, което проверява дали дължината на името
+                  (<code>username.length</code>) е по-малка от 5 символа. Ако е,
+                  да изпише "Името е твърде кратко". В противен случай, "Името е
+                  прието".
+                </div>
+              </details>
+              <details>
+                <summary>10. "Falsy" стойности</summary>
+                <div class="task-content">
+                  Създайте променлива <code>let userData = 0;</code>. Напишете
+                  <code>if (userData) { ... } else { ... }</code>. В
+                  <code>if</code>-a изпишете "Потребителят има данни", а в
+                  <code>else</code>-a "Липсват данни". Какъв е резултатът?
+                  Опитайте със <code>""</code>, <code>null</code>,
+                  <code>undefined</code> и <code>false</code>. Това са "Falsy"
+                  стойности, които <code>if</code>-ът третира като
+                  <code>false</code>.
+                </div>
+              </details>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <div class="nav-buttons-container">
+        <a href="index5.html" class="nav-button prev">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Към предишния урок
+        </a>
+        <a href="urok_javascript_loops.html" class="nav-button next">
+          Към следващия урок
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <footer class="text-center mt-8 text-gray-500">
+        <p>&copy; 2024 Интерактивен JavaScript Урок. Успех с ученето!</p>
+      </footer>
+    </div>
+
+    <!-- Всички скриптове за интерактивност са тук -->
+    <script>
+      // Интерактивен "Пропуск за клуба"
+      const ageInput = document.getElementById("ageInput");
+      const checkAgeBtn = document.getElementById("checkAgeBtn");
+      const ageResult = document.getElementById("ageResult");
+
+      checkAgeBtn.addEventListener("click", function () {
+        const age = Number(ageInput.value); // Превръщаме текста от полето в число
+
+        if (age >= 18 && age < 65) {
+          ageResult.textContent = "Повече от 18? Да. Заповядайте!";
+          ageResult.style.color = "#16a34a"; // Зелено
+        } else if (age >= 65) {
+          ageResult.textContent =
+            "Вие сте пълнолетен, но може би предпочитате по-тихо място? Влизате.";
+          ageResult.style.color = "#0284c7"; // Синьо
+        } else if (age > 0 && age < 18) {
+          ageResult.textContent = "Съжаляваме, трябва да имате 18 години.";
+          ageResult.style.color = "#dc2626"; // Червено
+        } else {
+          ageResult.textContent = "Моля, въведете валидна възраст.";
+          ageResult.style.color = "#f59e0b"; // Жълто
+        }
+      });
+
+      // Интерактивен "Дни от седмицата" (switch)
+      const dayInput = document.getElementById("dayInput");
+      const checkDayBtn = document.getElementById("checkDayBtn");
+      const dayResult = document.getElementById("dayResult");
+
+      checkDayBtn.addEventListener("click", function () {
+        let day = dayInput.value.trim(); // .trim() маха празните полета
+        let activity;
+
+        // Нормализираме входа, за да работи и с "понеделник"
+        let normalizedDay =
+          day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
+
+        switch (normalizedDay) {
+          case "Понеделник":
+            activity = "Начало на работната седмица. Успех!";
+            break;
+          case "Вторник":
+          case "Сряда":
+          case "Четвъртък":
+            activity = "Работа и учене. Продължавайте все така!";
+            break;
+          case "Петък":
+            activity = "Почти е уикенд! Още малко остана.";
+            break;
+          case "Събота":
+          case "Неделя":
+            activity = "Време за почивка! Насладете се.";
+            break;
+          default:
+            activity = `"${day}" не е валиден ден. Опитайте отново.`;
+        }
+        dayResult.textContent = activity;
+      });
+
+      // Функция за добавяне на бутони за копиране
+      document.querySelectorAll("pre").forEach((preElement) => {
+        const codeBlock = preElement.querySelector("code");
+        if (codeBlock) {
+          const copyBtn = document.createElement("button");
+          copyBtn.innerText = "Копирай";
+          copyBtn.className = "copy-btn";
+          preElement.appendChild(copyBtn);
+          copyBtn.addEventListener("click", () => {
+            const codeToCopy = codeBlock.innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = codeToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+              document.execCommand("copy");
+              copyBtn.innerText = "Копирано!";
+            } catch (err) {
+              copyBtn.innerText = "Грешка";
+              console.error("Неуспешно копиране: ", err);
+            }
+            document.body.removeChild(textArea);
+            setTimeout(() => {
+              copyBtn.innerText = "Копирай";
+            }, 2000);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
