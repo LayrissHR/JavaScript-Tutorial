@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Урок: Цикли в JavaScript - Ниво 8 (с AI)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        scroll-behavior: smooth;
+        background-color: #f3f4f6;
+        background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px),
+          radial-gradient(#d1d5db 0.5px, #f3f4f6 0.5px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+      }
+      .content-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05),
+          0 2px 4px -2px rgb(0 0 0 / 0.05);
+        margin-bottom: 2rem;
+      }
+      .fun-fact {
+        background-color: #f5f3ff;
+        border-left: 4px solid #8b5cf6;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .warning-box {
+        background-color: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .gemini-box {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-left: 4px solid #0ea5e9;
+      }
+      pre {
+        background-color: #1f2937;
+        color: #d1d5db;
+        padding: 1.5rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 0.9em;
+        position: relative;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background-color: #4b5563;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.8em;
+        opacity: 0.6;
+        transition: all 0.2s ease-in-out;
+      }
+      pre:hover .copy-btn {
+        opacity: 1;
+      }
+      .copy-btn:hover {
+        background-color: #6b7280;
+      }
+      .prose h2 {
+        margin-top: 2rem;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+        scroll-margin-top: 80px;
+      }
+      .prose h3 {
+        margin-top: 2.5rem;
+        scroll-margin-top: 80px;
+      }
+      .prose p {
+        text-align: justify;
+      }
+      .prose li {
+        text-align: justify;
+      }
+      .nav-item {
+        transition: all 0.2s ease-in-out;
+      }
+      .nav-item:hover {
+        transform: translateY(-2px);
+        color: #3b82f6;
+      }
+      .nav-buttons-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #d1d5db;
+      }
+      .nav-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+          0 1px 2px -1px rgb(0 0 0 / 0.1);
+      }
+      .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .nav-button.prev {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .nav-button.next {
+        background-color: #3b82f6;
+        color: white;
+      }
+      /* Styles for collapsible tasks */
+      details {
+        background-color: #fff;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        border: 1px solid #e5e7eb;
+        transition: box-shadow 0.3s ease;
+      }
+      details:hover {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      summary {
+        cursor: pointer;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary::after {
+        content: "▼";
+        font-size: 0.8em;
+        transition: transform 0.3s ease;
+      }
+      details[open] > summary {
+        border-bottom: 1px solid #e5e7eb;
+      }
+      details[open] > summary::after {
+        transform: rotate(180deg);
+      }
+      .task-content {
+        padding: 1.5rem;
+        font-size: 0.95em;
+      }
+
+      /* Loader styles */
+      .loader {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <nav class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="flex items-center justify-between h-16">
+          <span class="text-xl font-bold text-gray-800">JS Урок: Цикли</span>
+          <div
+            class="flex flex-wrap justify-center space-x-4 md:space-x-8 text-gray-600 font-medium"
+          >
+            <a href="#what-is" class="nav-item">Какво е?</a>
+            <a href="#for-loop" class="nav-item">for цикъл</a>
+            <a href="#while-loop" class="nav-item">while цикъл</a>
+            <a href="#loops-arrays" class="nav-item">Цикли и Масиви</a>
+            <a href="#ai-helper" class="nav-item">AI Помощник</a>
+            <a href="#final-tasks" class="nav-item">Задачи</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+      <header class="text-center mb-12">
+        <div
+          class="inline-block bg-indigo-100 text-indigo-800 p-4 rounded-full mb-4 shadow-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2a8.001 8.001 0 0015.357 2m0 0H15"
+            />
+          </svg>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+          Урок: Цикли (Loops) в JavaScript
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">
+          Как да накараме компютъра да работи вместо нас
+        </p>
+      </header>
+
+      <main class="prose prose-lg max-w-none">
+        <!-- ... съществуващите секции (What is, for-loop, while-loop, loops-arrays) ... -->
+
+        <div class="content-card">
+          <section id="what-is">
+            <h2>Какво е цикъл?</h2>
+            <p>
+              Цикълът е фундаментална концепция в програмирането. Той ни
+              позволява да изпълним един и същ блок от код <b>многократно</b>,
+              докато определено условие е вярно. Вместо да пишете
+              <code>console.log("Здрасти")</code> 100 пъти, вие просто казвате
+              на компютъра: "Изпълни този ред 100 пъти".
+            </p>
+            <p>
+              Представете си, че имате списък с 1000 потребители и искате да
+              изпратите имейл на всеки. Без цикли, ще трябва да напишете 1000
+              реда код. С цикъл, пишете 3-4 реда, които казват: "Вземи първия
+              потребител, изпрати имейл. Вземи втория, изпрати имейл..." и така,
+              докато списъкът свърши.
+            </p>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="for-loop">
+            <h2>Най-важният: <code>for</code> цикъл (за...)</h2>
+            <p>
+              Това е най-често срещаният цикъл. Той е идеален, когато знаете
+              <b>колко точно пъти</b> искате да се изпълни нещо. Структурата му
+              изглежда сложна отначало, но е много логична. Тя се състои от три
+              части, разделени с <code>;</code>:
+            </p>
+            <ol>
+              <li>
+                <b>Инициализация:</b> <code>let i = 0</code> (Създаваме "брояч",
+                който стартира от 0).
+              </li>
+              <li>
+                <b>Условие:</b> <code>i < 5</code> (Цикълът ще се върти,
+                <b>докато</b> <code>i</code> е по-малко от 5).
+              </li>
+              <li>
+                <b>Стъпка:</b> <code>i++</code> (След всяко "завъртане",
+                увеличаваме <code>i</code> с 1).
+              </li>
+            </ol>
+
+            <pre><code>for (let i = 0; i < 5; i++) {
+  console.log(`Текущият номер е ${i}`);
+}
+// Резултат:
+// Текущият номер е 0
+// Текущият номер е 1
+// Текущият номер е 2
+// Текущият номер е 3
+// Текущият номер е 4</code></pre>
+
+            <h4>Обяснение стъпка по стъпка:</h4>
+            <ul>
+              <li>
+                <b>Първо завъртане:</b> <code>i</code> се създава като 0.
+                Проверява: <code>0 < 5</code> (вярно). Изпълнява кода (изписва
+                0). <code>i</code> става 1.
+              </li>
+              <li>
+                <b>Второ завъртане:</b> Проверява: <code>1 < 5</code> (вярно).
+                Изпълнява кода (изписва 1). <code>i</code> става 2.
+              </li>
+              <li>
+                <b>Трето завъртане:</b> Проверява: <code>2 < 5</code> (вярно).
+                Изпълнява кода (изписва 2). <code>i</code> става 3.
+              </li>
+              <li>
+                <b>Четвърто завъртане:</b> Проверява:
+                <code>3 < 5</code> (вярно). Изпълнява кода (изписва 3).
+                <code>i</code> става 4.
+              </li>
+              <li>
+                <b>Пето завъртане:</b> Проверява: <code>4 < 5</code> (вярно).
+                Изпълнява кода (изписва 4). <code>i</code> става 5.
+              </li>
+              <li>
+                <b>Шесто завъртане:</b> Проверява:
+                <code>5 < 5</code> (<b>невярно!</b>). Цикълът спира.
+              </li>
+            </ul>
+
+            <h4>Интерактивен "Брояч до N":</h4>
+            <div class="bg-gray-100 p-4 rounded-lg">
+              <label for="countInput" class="font-bold">Брой до:</label>
+              <input
+                type="number"
+                id="countInput"
+                value="5"
+                class="border p-2 rounded w-full mt-2"
+              />
+              <button
+                id="countBtn"
+                class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition mt-3"
+              >
+                Старт!
+              </button>
+              <div
+                id="countResult"
+                class="font-mono text-sm mt-3 p-3 bg-white rounded"
+              ></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="while-loop">
+            <h2>Алтернативата: <code>while</code> цикъл (докато...)</h2>
+            <p>
+              <code>while</code> цикълът е по-прост. Той казва: "Изпълнявай този
+              код, <b>докато</b> (while) това условие е вярно". Той е полезен,
+              когато не знаете колко точно пъти ще се завърти цикълът, а
+              по-скоро чакате да се случи нещо.
+            </p>
+
+            <pre><code>let count = 0;
+
+while (count < 5) {
+  console.log(`While цикъл, номер ${count}`);
+  count++; // МНОГО ВАЖНО!
+}
+// Резултат: (същият като на for цикъла)</code></pre>
+
+            <h4>Обяснение:</h4>
+            <p>
+              Този код прави същото като <code>for</code> цикъла, но вие трябва
+              ръчно да се погрижите за брояча. Вие го създавате
+              <b>преди</b> цикъла (<code>let count = 0</code>) и вие го
+              увеличавате <b>вътре</b> в цикъла (<code>count++</code>).
+            </p>
+
+            <div class="warning-box">
+              <p class="font-bold">ВНИМАНИЕ: Вечен цикъл (Infinite Loop)!</p>
+              <p>
+                Ако забравите реда <code>count++</code> в
+                <code>while</code> цикъла, условието <code>count < 5</code> (0 <
+                5) ще бъде <b>винаги</b> вярно. Цикълът никога няма да спре!
+                Това ще "забие" браузъра ви и ще трябва да го затворите. Винаги
+                се уверявайте, че условието на <code>while</code> цикъла може в
+                един момент да стане <code>false</code>.
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="loops-arrays">
+            <h2>Най-важната употреба: Цикли и Масиви</h2>
+            <p>
+              Истинската сила на циклите идва, когато ги комбинираме с масиви.
+              Можем да "обходим" (iterate) целия масив и да направим нещо с
+              всеки негов елемент.
+            </p>
+            <p>
+              За да разберем колко пъти да се завърти цикълът, ние използваме
+              свойството <code>.length</code> на масива, което ни дава бройката
+              на елементите в него.
+            </p>
+
+            <pre><code>let fruits = ["Ябълка", "Банан", "Череша", "Портокал"];
+
+// i < fruits.length (т.е. i < 4)
+for (let i = 0; i < fruits.length; i++) {
+  console.log(`На позиция ${i} има: ${fruits[i]}`);
+}
+// Резултат:
+// На позиция 0 има: Ябълка
+// На позиция 1 има: Банан
+// На позиция 2 има: Череша
+// На позиция 3 има: Портокал</code></pre>
+
+            <h4>Интерактивен "Списък за пазар":</h4>
+            <div class="bg-gray-100 p-4 rounded-lg">
+              <p>
+                Имаме следния списък (масив):
+                <code>["Хляб", "Мляко", "Яйца", "Сирене"]</code>
+              </p>
+              <button
+                id="showListBtn"
+                class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition mt-3"
+              >
+                Покажи списъка!
+              </button>
+              <ul id="shoppingList" class="list-disc list-inside mt-3 text-lg">
+                <!-- Цикълът ще добави елементи тук -->
+              </ul>
+            </div>
+
+            <div class="fun-fact mt-8">
+              <p class="font-bold">
+                За по-напреднали: <code>for...of</code> цикъл
+              </p>
+              <p>
+                В модерния JavaScript има и по-лесен начин за обхождане на
+                масиви, когато не ви интересува позицията (индексът
+                <code>i</code>), а само стойността.
+              </p>
+              <pre><code>let colors = ["червено", "зелено", "синьо"];
+
+for (let color of colors) {
+  console.log(color);
+}
+// Резултат:
+// червено
+// зелено
+// синьо</code></pre>
+            </div>
+          </section>
+        </div>
+
+        <!-- НОВА СЕКЦИЯ С GEMINI -->
+        <div class="content-card gemini-box" id="ai-helper">
+          <h2 class="!border-sky-300">
+            ✨ Интерактивен AI Помощник (с Gemini)
+          </h2>
+          <p>
+            Използвайте силата на AI, за да ускорите ученето си! Тези
+            инструменти изпращат заявка до Gemini API, за да ви помогнат.
+          </p>
+
+          <h3 class="!mt-6">1. Генератор на код</h3>
+          <p>
+            Опишете с прости думи какъв цикъл искате да генерирате. (Напр.
+            "цикъл, който брои от 5 до 15", "цикъл за масив 'names'").
+          </p>
+          <textarea
+            id="generatorInput"
+            class="w-full border p-2 rounded-md"
+            rows="3"
+            placeholder="Опишете вашия цикъл тук..."
+          ></textarea>
+          <button
+            id="generateCodeBtn"
+            class="bg-sky-500 text-white font-bold py-2 px-4 rounded hover:bg-sky-700 transition mt-3 flex items-center gap-2"
+          >
+            <div id="loader-generate" class="loader"></div>
+            <span>✨ Генерирай код</span>
+          </button>
+          <pre
+            id="generatedCodeOutput"
+            class="mt-4 bg-gray-800"
+          ><code class="text-gray-300">... тук ще се появи генерираният код ...</code></pre>
+
+          <h3 class="!mt-8">2. Обяснение на код</h3>
+          <p>
+            Поставете <code>for</code> или <code>while</code> цикъл, който не
+            разбирате, и AI ще ви го обясни стъпка по стъпка на български.
+          </p>
+          <textarea
+            id="explainerInput"
+            class="w-full border p-2 rounded-md font-mono"
+            rows="5"
+            placeholder="for (let i = 0; i < 5; i++) { ... }"
+          ></textarea>
+          <button
+            id="explainCodeBtn"
+            class="bg-sky-500 text-white font-bold py-2 px-4 rounded hover:bg-sky-700 transition mt-3 flex items-center gap-2"
+          >
+            <div id="loader-explain" class="loader"></div>
+            <span>✨ Обясни ми кода</span>
+          </button>
+          <div
+            id="explanationOutput"
+            class="mt-4 p-4 bg-sky-50 rounded-md border border-sky-200"
+          >
+            ... тук ще се появи обяснението ...
+          </div>
+        </div>
+
+        <div class="content-card">
+          <section id="final-tasks">
+            <h2>Време за практика! Задачи с цикли</h2>
+            <p class="!text-left">
+              Кликнете върху всяка задача, за да видите условието.
+            </p>
+
+            <div class="mt-6 space-y-2">
+              <details>
+                <summary>1. Броене от 1 до 10</summary>
+                <div class="task-content">
+                  Напишете <code>for</code> цикъл, който изписва в конзолата
+                  числата от 1 до 10 (включително).
+                </div>
+              </details>
+              <details>
+                <summary>2. Всички четни числа</summary>
+                <div class="task-content">
+                  Напишете <code>for</code> цикъл, който изписва само четните
+                  числа от 2 до 20. (<em>Подсказка:</em> Можете да увеличите
+                  брояча с 2 на всяка стъпка: <code>i = i + 2</code>).
+                </div>
+              </details>
+              <details>
+                <summary>3. Обратно броене</summary>
+                <div class="task-content">
+                  Напишете <code>for</code> цикъл, който брои обратно от 10 до 1
+                  и завършва с "Старт!". (<em>Подсказка:</em> Започнете с
+                  <code>let i = 10</code>, условието е <code>i > 0</code>, а
+                  стъпката е <code>i--</code>).
+                </div>
+              </details>
+              <details>
+                <summary>4. Сумата на числата</summary>
+                <div class="task-content">
+                  Създайте променлива <code>let sum = 0;</code> преди цикъла.
+                  Напишете <code>for</code> цикъл, който събира всички числа от
+                  1 до 100 и записва крайния резултат в <code>sum</code>.
+                  Изпишете <code>sum</code> в конзолата <b>след</b> края на
+                  цикъла.
+                </div>
+              </details>
+              <details>
+                <summary>5. Обхождане на масив</summary>
+                <div class="task-content">
+                  Създайте масив с имената на 3 ваши приятели. Напишете
+                  <code>for</code> цикъл, който обхожда масива и изписва
+                  "Здравей, [ИМЕ]!" за всеки от тях.
+                </div>
+              </details>
+              <details>
+                <summary>6. `while` цикъл</summary>
+                <div class="task-content">
+                  Пренапишете задача 1 (броене от 1 до 10) с помощта на
+                  <code>while</code> цикъл. Не забравяйте да създадете брояча
+                  преди цикъла и да го увеличавате вътре в него!
+                </div>
+              </details>
+              <details>
+                <summary>7. Намиране на най-голямо число</summary>
+                <div class="task-content">
+                  Създайте масив с числа, напр. <code>[10, 5, 40, 25, 1]</code>.
+                  Напишете цикъл, който намира най-голямото число в масива. (<em
+                    >Подсказка:</em
+                  >
+                  <code>let max = numbers[0];</code> преди цикъла. Вътре в
+                  цикъла,
+                  <code>if (numbers[i] > max) { max = numbers[i]; }</code>).
+                </div>
+              </details>
+              <details>
+                <summary>8. `for...of` цикъл</summary>
+                <div class="task-content">
+                  Пренапишете задача 5 (масива с приятели) с помощта на
+                  <code>for...of</code> цикъл. Вижте колко по-кратко е!
+                </div>
+              </details>
+              <details>
+                <summary>9. Пирамида от звездички</summary>
+                <div class="task-content">
+                  Напишете цикъл, който изписва в конзолата следното:<br />
+                  *<br />
+                  **<br />
+                  ***<br />
+                  ****<br />
+                  *****<br />
+                  (<em>Подсказка:</em> <code>let stars = "";</code>. Вътре в
+                  цикъла <code>stars = stars + "*"</code> и
+                  <code>console.log(stars)</code>).
+                </div>
+              </details>
+              <details>
+                <summary>10. Ключовата дума `break`</summary>
+                <div class="task-content">
+                  Напишете <code>for</code> цикъл, който брои от 1 до 50. Вътре
+                  в цикъла добавете <code>if</code> проверка: ако числото е 25,
+                  изпишете "Намерих 25!" и незабавно спрете цикъла с командата
+                  <code>break;</code>.
+                </div>
+              </details>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <div class="nav-buttons-container">
+        <a href="index6.html" class="nav-button prev">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Към предишния урок
+        </a>
+        <a href="urok_javascript_functions.html" class="nav-button next">
+          Към следващия урок
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <footer class="text-center mt-8 text-gray-500">
+        <p>&copy; 2024 Интерактивен JavaScript Урок. Успех с ученето!</p>
+      </footer>
+    </div>
+
+    <!-- Всички скриптове за интерактивност са тук -->
+    <script>
+      // Интерактивен "Брояч до N"
+      const countInput = document.getElementById("countInput");
+      const countBtn = document.getElementById("countBtn");
+      const countResult = document.getElementById("countResult");
+
+      countBtn.addEventListener("click", function () {
+        const limit = Number(countInput.value);
+        countResult.innerHTML = ""; // Изчистваме резултата
+
+        if (limit > 1000) {
+          countResult.textContent =
+            "Моля, изберете по-малко число (до 1000), за да не блокира браузъра.";
+          return;
+        }
+        if (limit <= 0) {
+          countResult.textContent = "Моля, изберете положително число.";
+          return;
+        }
+
+        for (let i = 1; i <= limit; i++) {
+          countResult.innerHTML += `Броя: ${i}<br>`;
+        }
+      });
+
+      // Интерактивен "Списък за пазар"
+      const showListBtn = document.getElementById("showListBtn");
+      const shoppingListUl = document.getElementById("shoppingList");
+      const shoppingListItems = ["Хляб", "Мляко", "Яйца", "Сирене"];
+
+      showListBtn.addEventListener("click", function () {
+        shoppingListUl.innerHTML = ""; // Изчистваме списъка, ако вече е генериран
+
+        for (let i = 0; i < shoppingListItems.length; i++) {
+          const newLi = document.createElement("li"); // Създаваме нов <li> елемент
+          newLi.textContent = `Купи: ${shoppingListItems[i]}`; // Слагаме му текст
+          shoppingListUl.appendChild(newLi); // Добавяме го към <ul>
+        }
+        showListBtn.disabled = true; // Деактивираме бутона, за да не се пълни многократно
+        showListBtn.textContent = "Готово!";
+      });
+
+      // Функция за добавяне на бутони за копиране
+      document.querySelectorAll("pre").forEach((preElement) => {
+        const codeBlock = preElement.querySelector("code");
+        if (codeBlock) {
+          const copyBtn = document.createElement("button");
+          copyBtn.innerText = "Копирай";
+          copyBtn.className = "copy-btn";
+          preElement.appendChild(copyBtn);
+          copyBtn.addEventListener("click", () => {
+            const codeToCopy = codeBlock.innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = codeToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+              document.execCommand("copy");
+              copyBtn.innerText = "Копирано!";
+            } catch (err) {
+              copyBtn.innerText = "Грешка";
+              console.error("Неуспешно копиране: ", err);
+            }
+            document.body.removeChild(textArea);
+            setTimeout(() => {
+              copyBtn.innerText = "Копирай";
+            }, 2000);
+          });
+        }
+      });
+
+      // --- НОВ GEMINI API КОД ---
+
+      // Helper function to call Gemini API with exponential backoff
+      async function callGeminiApi(
+        systemPrompt,
+        userQuery,
+        retries = 3,
+        delay = 1000
+      ) {
+        const apiKey = "AIzaSyDl9-13i8sNNvWjPoq_J6QtPZIEP4LIgBA";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        const payload = {
+          contents: [{ parts: [{ text: userQuery }] }],
+          systemInstruction: {
+            parts: [{ text: systemPrompt }],
+          },
+        };
+
+        try {
+          const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            // Ако има проблем с твърде много заявки, опитай пак
+            if (response.status === 429 && retries > 0) {
+              await new Promise((resolve) => setTimeout(resolve, delay));
+              return callGeminiApi(
+                systemPrompt,
+                userQuery,
+                retries - 1,
+                delay * 2
+              );
+            }
+            throw new Error(
+              `Грешка при заявка към API: ${response.statusText}`
+            );
+          }
+
+          const result = await response.json();
+          const candidate = result.candidates?.[0];
+
+          if (candidate && candidate.content?.parts?.[0]?.text) {
+            return candidate.content.parts[0].text;
+          } else {
+            throw new Error("Няма валиден отговор от API.");
+          }
+        } catch (error) {
+          console.error("Gemini API call failed:", error);
+          // При мрежова грешка, опитай пак
+          if (
+            retries > 0 &&
+            (error.message.includes("NetworkError") ||
+              error.message.includes("Failed to fetch"))
+          ) {
+            await new Promise((resolve) => setTimeout(resolve, delay));
+            return callGeminiApi(
+              systemPrompt,
+              userQuery,
+              retries - 1,
+              delay * 2
+            );
+          }
+          return `Грешка при извикването на AI: ${error.message}`;
+        }
+      }
+
+      // Helper for loaders
+      function toggleLoader(loaderId, show) {
+        const loader = document.getElementById(loaderId);
+        if (loader) {
+          loader.style.display = show ? "inline-block" : "none";
+        }
+      }
+
+      // --- 1. Генератор на код ---
+      const generateCodeBtn = document.getElementById("generateCodeBtn");
+      const generatorInput = document.getElementById("generatorInput");
+      const generatedCodeOutput = document
+        .getElementById("generatedCodeOutput")
+        .querySelector("code");
+
+      generateCodeBtn.addEventListener("click", async () => {
+        const userPrompt = generatorInput.value;
+        if (!userPrompt) {
+          generatedCodeOutput.textContent =
+            "Моля, въведете описание на цикъла.";
+          return;
+        }
+
+        toggleLoader("loader-generate", true);
+        generateCodeBtn.disabled = true;
+        generatedCodeOutput.textContent = "AI мисли...";
+
+        const systemPrompt =
+          "You are a JavaScript expert. Your task is to generate *only* the JavaScript code block for the loop described by the user. Do not add any explanations, just the code. Make sure the code is syntactically correct.";
+        const userQuery = `Generate a JavaScript loop that does this: "${userPrompt}"`;
+
+        let response = await callGeminiApi(systemPrompt, userQuery);
+
+        // Почистване на отговора
+        response = response
+          .replace(/```javascript/g, "")
+          .replace(/```/g, "")
+          .trim();
+
+        generatedCodeOutput.textContent = response;
+        toggleLoader("loader-generate", false);
+        generateCodeBtn.disabled = false;
+      });
+
+      // --- 2. Обяснение на код ---
+      const explainCodeBtn = document.getElementById("explainCodeBtn");
+      const explainerInput = document.getElementById("explainerInput");
+      const explanationOutput = document.getElementById("explanationOutput");
+
+      explainCodeBtn.addEventListener("click", async () => {
+        const userCode = explainerInput.value;
+        if (!userCode) {
+          explanationOutput.textContent = "Моля, поставете код за обяснение.";
+          return;
+        }
+
+        toggleLoader("loader-explain", true);
+        explainCodeBtn.disabled = true;
+        explanationOutput.innerHTML =
+          '<div class="loader" style="display: block;"></div> AI анализира кода...';
+
+        const systemPrompt =
+          "You are a friendly and helpful JavaScript tutor. Explain the following JavaScript loop code to a beginner, step-by-step. Speak in Bulgarian. Be encouraging and clear. Use simple terms. Format the output with paragraphs or bullet points if needed.";
+        const userQuery = `Explain this JavaScript code: \n\n${userCode}`;
+
+        const response = await callGeminiApi(systemPrompt, userQuery);
+
+        explanationOutput.innerHTML = response.replace(/\n/g, "<br>"); // Показваме отговора, като сменяме новите редове
+        toggleLoader("loader-explain", false);
+        explainCodeBtn.disabled = false;
+      });
+    </script>
+  </body>
+</html>
