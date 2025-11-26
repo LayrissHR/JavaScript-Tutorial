@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок: Валидация на формуляри - Ниво 10</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #f3f4f6;
+            background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px), radial-gradient(#d1d5db 0.5px, #f3f4f6 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            margin-bottom: 2rem;
+        }
+        .fun-fact {
+            background-color: #ecfeff;
+            border-left: 4px solid #06b6d4;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning-box {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .code-box {
+            background-color: #1f2937;
+            border-radius: 8px;
+            margin: 1rem 0;
+            position: relative;
+        }
+        pre {
+            color: #d1d5db;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-size: 0.9em;
+            margin: 0;
+        }
+        .copy-btn {
+            position: absolute; top: 12px; right: 12px; background-color: #4b5563; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.8em; opacity: 0.6; transition: all 0.2s ease-in-out;
+        }
+        .code-box:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { background-color: #6b7280; }
+        .prose h2 { margin-top: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; scroll-margin-top: 80px; }
+        .prose h3 { margin-top: 2.5rem; scroll-margin-top: 80px; }
+        .prose p { text-align: justify; }
+        .prose li { text-align: justify; }
+        .nav-item { transition: all 0.2s ease-in-out; }
+        .nav-item:hover { transform: translateY(-2px); color: #0891b2; }
+        .nav-buttons-container { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #d1d5db; }
+        .nav-button { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s ease-in-out; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); }
+        .nav-button:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .nav-button.prev { background-color: #3b82f6; color: white; }
+        .nav-button.next { background-color: #e5e7eb; color: #4b5563; cursor: not-allowed; }
+        /* Styles for collapsible tasks */
+        details { background-color: #fff; border-radius: 8px; margin-bottom: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); border: 1px solid #e5e7eb; transition: box-shadow 0.3s ease; }
+        details:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        summary { cursor: pointer; padding: 1rem 1.5rem; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '▼'; font-size: 0.8em; transition: transform 0.3s ease; }
+        details[open] > summary { border-bottom: 1px solid #e5e7eb;}
+        details[open] > summary::after { transform: rotate(180deg); }
+        .task-content { padding: 1.5rem; font-size: 0.95em; }
+        
+        /* Error styles */
+        .error-message { color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem; display: none; font-weight: 500; }
+        .input-error { border-color: #dc2626 !important; background-color: #fef2f2; }
+        .input-success { border-color: #16a34a !important; background-color: #f0fdf4; }
+        
+        /* Tab styles */
+        .tab-btn { padding: 0.5rem 1rem; border-bottom: 2px solid transparent; font-weight: 500; color: #6b7280; }
+        .tab-btn.active { border-bottom-color: #0891b2; color: #0891b2; }
+    </style>
+</head>
+<body class="text-gray-800">
+    
+    <nav class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+        <div class="container mx-auto max-w-5xl px-4">
+            <div class="flex items-center justify-between h-16">
+                <span class="text-xl font-bold text-gray-800">JS Урок: Формуляри</span>
+                <div class="flex flex-wrap justify-center space-x-4 md:space-x-8 text-gray-600 font-medium">
+                    <a href="#what-is" class="nav-item">Основи</a>
+                    <a href="#static-dynamic" class="nav-item">Статична vs Динамична</a>
+                    <a href="#regex" class="nav-item">Regex</a>
+                    <a href="#example-form" class="nav-item">Пример</a>
+                    <a href="#final-tasks" class="nav-item">Задачи</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+        <header class="text-center mb-12">
+            <div class="inline-block bg-cyan-100 text-cyan-800 p-4 rounded-full mb-4 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">Урок: Валидация на формуляри</h1>
+            <p class="mt-4 text-lg text-gray-600">Как да защитим данните си от грешки</p>
+        </header>
+
+        <main class="prose prose-lg max-w-none">
+            <div class="content-card">
+                <section id="what-is">
+                    <h2>Защо ни е нужна валидация?</h2>
+                    <p>Валидацията е процесът на проверка дали данните, въведени от потребителя, отговарят на определени правила, <b>преди</b> да бъдат изпратени към сървъра. Това е първата линия на защита.</p>
+                    <p>Представете си, че поръчвате пица онлайн, но забравите да напишете адреса си. Ако сайтът не ви спре (валидира), поръчката ще тръгне, но пицата никога няма да пристигне. Валидацията спестява време и нерви на всички.</p>
+                    
+                    <div class="warning-box">
+                        <p class="font-bold">Клиентска vs Сървърна валидация</p>
+                        <p>Ние тук учим <b>клиентска валидация</b> (в браузъра). Тя е за удобство на потребителя. Но не забравяйте: един хакер може да заобиколи браузъра! Затова данните <b>винаги</b> трябва да се проверяват отново и на сървъра.</p>
+                    </div>
+                </section>
+            </div>
+            
+            <div class="content-card">
+                <section id="static-dynamic">
+                    <h2>Статична срещу Динамична проверка</h2>
+                    <p>Това са двата основни подхода, които често се комбинират.</p>
+
+                    <h3>1. Статична валидация (При изпращане)</h3>
+                    <p>Проверката се извършва чак когато потребителят натисне бутона "Изпрати" (Submit). </p>
+                    <ul>
+                        <li><b>Плюс:</b> Не досажда на потребителя, докато пише.</li>
+                        <li><b>Минус:</b> Потребителят може да се изненада от 10 грешки наведнъж накрая.</li>
+                    </ul>
+                    <div class="code-box">
+                        <pre><code>form.addEventListener('submit', function(event) {
+  // 1. Спираме изпращането
+  event.preventDefault(); 
+  
+  // 2. Проверяваме
+  if (input.value === "") {
+     alert("Грешка!");
+  } else {
+     form.submit(); // Ръчно изпращане, ако всичко е точно
+  }
+});</code></pre>
+                    </div>
+
+                    <h3>2. Динамична валидация (В реално време)</h3>
+                    <p>Проверката се извършва моментално, докато потребителят пише или когато напусне полето. Използваме събитията <code>input</code> (при всяка буква) или <code>blur</code> (при излизане от полето).</p>
+                    <ul>
+                        <li><b>Плюс:</b> Веднага виждаш дали си сбъркал.</li>
+                        <li><b>Минус:</b> Ако е твърде агресивна (напр. да ти казва "Невалиден имейл" още докато си написал само първата буква), може да е дразнещо.</li>
+                    </ul>
+                    <div class="code-box">
+                        <pre><code>// Слушаме за всяка промяна в полето
+usernameInput.addEventListener('input', function() {
+  if (usernameInput.value.length < 3) {
+     errorMsg.style.display = "block";
+     usernameInput.style.borderColor = "red";
+  } else {
+     errorMsg.style.display = "none";
+     usernameInput.style.borderColor = "green";
+  }
+});</code></pre>
+                    </div>
+                </section>
+            </div>
+            
+            <div class="content-card">
+                <section id="regex">
+                    <h2>Супер-силата: Регулярни изрази (Regex)</h2>
+                    <p>Понякога трябва да проверим дали текстът следва сложен шаблон (например: дали е валиден имейл, телефон или ЕГН). Тук на помощ идват Регулярните изрази. Те са като "код за търсене на текст".</p>
+                    <p>В JavaScript те се ограждат с наклонени черти <code>/.../</code>. Използваме метода <code>.test()</code>, за да проверим дали текстът отговаря на шаблона.</p>
+                    
+                    <ul class="list-disc pl-5 space-y-2 mt-4">
+                        <li><code>/^\d+$/</code> - Само цифри (от началото <code>^</code> до края <code>$</code>).</li>
+                        <li><code>/[a-z]/</code> - Съдържа поне една малка буква.</li>
+                        <li><code>/^[a-zA-Z]+$/</code> - Само букви (без цифри и символи).</li>
+                        <li><code>/\S+@\S+\.\S+/</code> - Много проста проверка за имейл (нещо @ нещо . нещо).</li>
+                    </ul>
+
+                    <div class="code-box">
+                        <pre><code>const phoneRegex = /^\d{10}$/; // Търси точно 10 цифри
+const phoneNumber = "0888123456";
+
+if (phoneRegex.test(phoneNumber)) {
+    console.log("Валиден телефон!");
+} else {
+    console.log("Невалиден формат.");
+}</code></pre>
+                    </div>
+                </section>
+            </div>
+
+            <div class="content-card">
+                <section id="example-form">
+                    <h2>Интерактивен пример (Комбиниран)</h2>
+                    <p>Тук комбинираме всичко: HTML атрибути, Статична проверка при бутона и Динамична проверка за паролата.</p>
+
+                    <div class="bg-white border-2 border-gray-100 p-6 rounded-xl shadow-sm mt-6">
+                        <form id="registerForm" class="space-y-5" novalidate> <!-- novalidate спира вградената в браузъра проверка, за да тестваме нашата JS -->
+                            
+                            <!-- Потребителско име -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Потребителско име <span class="text-xs text-gray-400">(мин. 3 символа)</span></label>
+                                <div class="relative mt-1">
+                                    <input type="text" id="regUsername" class="block w-full border border-gray-300 rounded-md shadow-sm p-2 pl-3 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none">
+                                    <div id="usernameIcon" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none hidden">
+                                        <!-- Икона за успех/грешка ще се появи тук -->
+                                    </div>
+                                </div>
+                                <p id="errorUsername" class="error-message">Името трябва да е поне 3 символа.</p>
+                            </div>
+                            
+                            <!-- Имейл с Regex -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Имейл</label>
+                                <input type="email" id="regEmail" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none">
+                                <p id="errorEmail" class="error-message">Моля, въведете валиден имейл.</p>
+                            </div>
+
+                            <!-- Парола -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Парола</label>
+                                    <input type="password" id="regPass" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Потвърди Парола</label>
+                                    <input type="password" id="regPassConfirm" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-cyan-500 focus:border-cyan-500 transition outline-none">
+                                </div>
+                            </div>
+                            <p id="errorPass" class="error-message">Паролите не съвпадат или са празни!</p>
+                            
+                            <!-- Динамичен индикатор за паролата -->
+                            <div id="passStrength" class="hidden text-xs space-y-1 bg-gray-50 p-2 rounded">
+                                <p id="ruleLength" class="text-gray-500">• Поне 6 символа</p>
+                                <p id="ruleNumber" class="text-gray-500">• Поне една цифра</p>
+                            </div>
+
+                            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                                Регистрация
+                            </button>
+                            
+                            <div id="successMessage" class="hidden p-4 bg-green-50 border border-green-200 rounded-md text-green-700 text-center">
+                                <p class="font-bold">Успех!</p>
+                                <p class="text-sm">Данните са валидни и готови за изпращане.</p>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+
+            <div class="content-card">
+                <section id="final-tasks">
+                    <h2>Време за практика!</h2>
+                    <p class="!text-left">Кликнете върху всяка задача, за да видите условието.</p>
+                    
+                    <div class="mt-6 space-y-2">
+                        <details>
+                            <summary>1. Задължително поле (HTML)</summary>
+                            <div class="task-content">Създайте проста форма с едно поле за име и бутон. Добавете атрибута <code>required</code> в HTML-а и пробвайте да я изпратите празна.</div>
+                        </details>
+                        <details>
+                            <summary>2. Проверка на дължина (Статична)</summary>
+                            <div class="task-content">Създайте поле за "Коментар". При <code>submit</code>, проверете с JS дали дължината е над 10 символа. Ако не е, използвайте <code>alert()</code> и <code>event.preventDefault()</code>.</div>
+                        </details>
+                        <details>
+                            <summary>3. Валидация в реално време (Динамична)</summary>
+                            <div class="task-content">Изберете едно поле (напр. "Потребител"). Добавете слушател за <code>input</code> събитието. Ако потребителят въведе "admin", оцветете рамката в червено (защото е заето име), иначе - в зелено.</div>
+                        </details>
+                        <details>
+                            <summary>4. Телефонен номер (Regex)</summary>
+                            <div class="task-content">Направете поле за телефон. При изпращане проверете дали съдържа само цифри (<code>/^\d+$/.test(value)</code>). Ако има букви, покажете грешка.</div>
+                        </details>
+                        <details>
+                            <summary>5. Сравняване на пароли</summary>
+                            <div class="task-content">Класическа задача: Две полета за парола. При промяна на второто поле (събитие <code>input</code>), проверявайте дали съвпада с първото. Ако не - покажете червен текст "Не съвпадат".</div>
+                        </details>
+                        <details>
+                            <summary>6. Чекбокс "Съгласен съм"</summary>
+                            <div class="task-content">Добавете чекбокс. При опит за изпращане, проверете свойството <code>.checked</code>. Ако е <code>false</code>, спрете формата и оцветете текста на чекбокса в червено.</div>
+                        </details>
+                        <details>
+                            <summary>7. Бутон "Show Password"</summary>
+                            <div class="task-content">Добавете бутонче до полето за парола. При клик, сменете атрибута <code>type</code> на полето от <code>"password"</code> на <code>"text"</code> и обратно.</div>
+                        </details>
+                        <details>
+                            <summary>8. Деактивиране на бутона</summary>
+                            <div class="task-content">Направете бутона за изпращане <code>disabled</code> по подразбиране. Активирайте го с JS само когато всички полета са попълнени валидно.</div>
+                        </details>
+                    </div>
+                </section>
+            </div>
+        </main>
+        
+        <div class="nav-buttons-container">
+            <a href="index8.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                Към предишния урок
+            </a>
+            <a href="#" class="nav-button next">
+                Към следващия урок
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+            </a>
+        </div>
+        
+        <footer class="text-center mt-8 text-gray-500">
+            <p>&copy; 2025 Интерактивен JavaScript Урок. инж. Пламена Янева</p>
+        </footer>
+    </div>
+
+    <!-- Всички скриптове за интерактивност са тук -->
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const regUsername = document.getElementById('regUsername');
+        const regEmail = document.getElementById('regEmail');
+        const regPass = document.getElementById('regPass');
+        const regPassConfirm = document.getElementById('regPassConfirm');
+        
+        const errorUsername = document.getElementById('errorUsername');
+        const errorEmail = document.getElementById('errorEmail');
+        const errorPass = document.getElementById('errorPass');
+        const successMessage = document.getElementById('successMessage');
+        const passStrength = document.getElementById('passStrength');
+        const ruleLength = document.getElementById('ruleLength');
+        const ruleNumber = document.getElementById('ruleNumber');
+
+        // Regex за имейл (опростен)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Regex за цифра
+        const numberRegex = /\d/;
+
+        // --- ДИНАМИЧНА ВАЛИДАЦИЯ (input events) ---
+
+        // 1. Потребителско име
+        regUsername.addEventListener('input', function() {
+            if (this.value.length >= 3) {
+                setFieldStatus(this, errorUsername, true);
+            } else {
+                setFieldStatus(this, errorUsername, false); // false означава "не е валидно, но не показвай грешка веднага докато пише", или "покажи грешка" зависи от UX. Тук ще го направим да маха грешката ако е валидно.
+                // За по-добър UX обикновено грешката се показва при 'blur' или ако е било валидно и стане невалидно.
+                // За простота тук: ако е < 3, махаме success класа.
+                this.classList.remove('input-success');
+            }
+        });
+
+        // По-агресивна валидация при напускане на полето (blur)
+        regUsername.addEventListener('blur', function() {
+            if (this.value.length < 3 && this.value.length > 0) {
+                setFieldStatus(this, errorUsername, false);
+            }
+        });
+
+        // 2. Имейл (Regex)
+        regEmail.addEventListener('input', function() {
+            if (emailRegex.test(this.value)) {
+                setFieldStatus(this, errorEmail, true);
+            } else {
+                this.classList.remove('input-success');
+                // Не показваме грешка веднага докато пише имейла, защото е дразнещо
+                errorEmail.style.display = 'none';
+            }
+        });
+
+        regEmail.addEventListener('blur', function() {
+            if (!emailRegex.test(this.value) && this.value.length > 0) {
+                setFieldStatus(this, errorEmail, false);
+            }
+        });
+
+        // 3. Парола (Правила в реално време)
+        regPass.addEventListener('focus', () => passStrength.classList.remove('hidden'));
+        regPass.addEventListener('blur', () => {
+             if(regPass.value === "") passStrength.classList.add('hidden');
+        });
+
+        regPass.addEventListener('input', function() {
+            const val = this.value;
+            let goodLength = val.length >= 6;
+            let hasNumber = numberRegex.test(val);
+
+            // Визуална промяна на правилата
+            updateRule(ruleLength, goodLength);
+            updateRule(ruleNumber, hasNumber);
+
+            if (goodLength && hasNumber) {
+                this.classList.add('input-success');
+                this.classList.remove('input-error');
+            } else {
+                this.classList.remove('input-success');
+            }
+            
+            // Проверка и на потвърждението, ако вече е попълнено
+            if (regPassConfirm.value.length > 0) checkPasswordsMatch();
+        });
+
+        // 4. Потвърждение на парола
+        regPassConfirm.addEventListener('input', checkPasswordsMatch);
+
+        function checkPasswordsMatch() {
+            if (regPass.value === regPassConfirm.value && regPass.value !== "") {
+                setFieldStatus(regPassConfirm, errorPass, true);
+            } else {
+                // Тук може да покажем грешка веднага
+                regPassConfirm.classList.add('input-error');
+                regPassConfirm.classList.remove('input-success');
+                errorPass.style.display = 'block';
+            }
+        }
+
+        // --- СТАТИЧНА ВАЛИДАЦИЯ (submit event) ---
+
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+
+            // Проверка на име
+            if (regUsername.value.length < 3) {
+                isValid = false;
+                setFieldStatus(regUsername, errorUsername, false);
+            }
+
+            // Проверка на имейл
+            if (!emailRegex.test(regEmail.value)) {
+                isValid = false;
+                setFieldStatus(regEmail, errorEmail, false);
+            }
+
+            // Проверка на парола
+            if (regPass.value.length < 6 || !numberRegex.test(regPass.value)) {
+                isValid = false;
+                regPass.classList.add('input-error');
+                // Можем да покажем alert или да разчитаме на малките правила
+                passStrength.classList.remove('hidden');
+            }
+
+            // Проверка съвпадение
+            if (regPass.value !== regPassConfirm.value || regPass.value === "") {
+                isValid = false;
+                setFieldStatus(regPassConfirm, errorPass, false);
+            }
+
+            if (isValid) {
+                successMessage.classList.remove('hidden');
+                registerForm.querySelector('button').disabled = true;
+                // Скриваме формата или правим друго действие
+            } else {
+                successMessage.classList.add('hidden');
+            }
+        });
+
+        // Помощни функции
+        function setFieldStatus(input, errorMsgElement, isSuccess) {
+            if (isSuccess) {
+                input.classList.remove('input-error');
+                input.classList.add('input-success');
+                errorMsgElement.style.display = 'none';
+            } else {
+                input.classList.add('input-error');
+                input.classList.remove('input-success');
+                errorMsgElement.style.display = 'block';
+            }
+        }
+
+        function updateRule(element, isMet) {
+            if (isMet) {
+                element.classList.remove('text-gray-500', 'text-red-500');
+                element.classList.add('text-green-600', 'font-bold');
+                element.textContent = element.textContent.replace('•', '✓');
+            } else {
+                element.classList.remove('text-green-600', 'font-bold');
+                element.classList.add('text-gray-500');
+                element.textContent = element.textContent.replace('✓', '•');
+            }
+        }
+
+        // Функция за добавяне на бутони за копиране
+        document.querySelectorAll('pre').forEach(preElement => {
+            const codeBlock = preElement.querySelector('code');
+            if (codeBlock) {
+                const copyBtn = document.createElement('button');
+                copyBtn.innerText = 'Копирай';
+                copyBtn.className = 'copy-btn';
+                preElement.appendChild(copyBtn);
+                copyBtn.addEventListener('click', () => {
+                    const codeToCopy = codeBlock.innerText;
+                    const textArea = document.createElement('textarea');
+                    textArea.value = codeToCopy;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        copyBtn.innerText = 'Копирано!';
+                    } catch (err) {
+                        copyBtn.innerText = 'Грешка';
+                        console.error('Неуспешно копиране: ', err);
+                    }
+                    document.body.removeChild(textArea);
+                    setTimeout(() => { copyBtn.innerText = 'Копирай'; }, 2000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
