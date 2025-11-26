@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Урок: Функции в JavaScript - Ниво 9</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        scroll-behavior: smooth;
+        background-color: #f3f4f6;
+        background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px),
+          radial-gradient(#d1d5db 0.5px, #f3f4f6 0.5px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+      }
+      .content-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05),
+          0 2px 4px -2px rgb(0 0 0 / 0.05);
+        margin-bottom: 2rem;
+      }
+      .fun-fact {
+        background-color: #fdf4ff;
+        border-left: 4px solid #d946ef;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .warning-box {
+        background-color: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+      pre {
+        background-color: #1f2937;
+        color: #d1d5db;
+        padding: 1.5rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 0.9em;
+        position: relative;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background-color: #4b5563;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.8em;
+        opacity: 0.6;
+        transition: all 0.2s ease-in-out;
+      }
+      pre:hover .copy-btn {
+        opacity: 1;
+      }
+      .copy-btn:hover {
+        background-color: #6b7280;
+      }
+      .prose h2 {
+        margin-top: 2rem;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+        scroll-margin-top: 80px;
+      }
+      .prose h3 {
+        margin-top: 2.5rem;
+        scroll-margin-top: 80px;
+      }
+      .prose p {
+        text-align: justify;
+      }
+      .prose li {
+        text-align: justify;
+      }
+      .nav-item {
+        transition: all 0.2s ease-in-out;
+      }
+      .nav-item:hover {
+        transform: translateY(-2px);
+        color: #3b82f6;
+      }
+      .nav-buttons-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #d1d5db;
+      }
+      .nav-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+          0 1px 2px -1px rgb(0 0 0 / 0.1);
+      }
+      .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .nav-button.prev {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .nav-button.next {
+        background-color: #3b82f6;
+        color: white;
+      }
+      /* Styles for collapsible tasks */
+      details {
+        background-color: #fff;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        border: 1px solid #e5e7eb;
+        transition: box-shadow 0.3s ease;
+      }
+      details:hover {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      summary {
+        cursor: pointer;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary::after {
+        content: "▼";
+        font-size: 0.8em;
+        transition: transform 0.3s ease;
+      }
+      details[open] > summary {
+        border-bottom: 1px solid #e5e7eb;
+      }
+      details[open] > summary::after {
+        transform: rotate(180deg);
+      }
+      .task-content {
+        padding: 1.5rem;
+        font-size: 0.95em;
+      }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <nav class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="flex items-center justify-between h-16">
+          <span class="text-xl font-bold text-gray-800">JS Урок: Функции</span>
+          <div
+            class="flex flex-wrap justify-center space-x-4 md:space-x-8 text-gray-600 font-medium"
+          >
+            <a href="#what-is" class="nav-item">Какво е?</a>
+            <a href="#params" class="nav-item">Параметри</a>
+            <a href="#return" class="nav-item">Връщане (return)</a>
+            <a href="#arrow-funcs" class="nav-item">Стрелкови функции</a>
+            <a href="#final-tasks" class="nav-item">Задачи</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+      <header class="text-center mb-12">
+        <div
+          class="inline-block bg-purple-100 text-purple-800 p-4 rounded-full mb-4 shadow-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+          Урок: Функции в JavaScript
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">
+          Как да създаваме собствени команди и инструменти
+        </p>
+      </header>
+
+      <main class="prose prose-lg max-w-none">
+        <div class="content-card">
+          <section id="what-is">
+            <h2>Какво е функция?</h2>
+            <p>
+              Представете си, че имате рецепта за торта. Вместо да обяснявате на
+              всеки поотделно как се прави (разбии яйцата, добави брашно,
+              печи...), вие просто казвате: "Направи торта".
+            </p>
+            <p>
+              Функцията е точно това -
+              <b>блок от код с име, който можем да изпълняваме многократно</b>.
+              Това ни помага да не повтаряме един и същи код (принципът DRY -
+              Don't Repeat Yourself).
+            </p>
+
+            <h3>Синтаксис:</h3>
+            <pre><code>// 1. Деклариране (създаване) на функцията
+function sayHello() {
+  console.log("Здравей, свят!");
+}
+
+// 2. Извикване (изпълнение) на функцията
+sayHello();
+sayHello(); // Можем да я викаме колкото пъти искаме</code></pre>
+
+            <h4>Интерактивен тест:</h4>
+            <div class="bg-gray-100 p-4 rounded-lg flex items-center gap-4">
+              <button
+                id="simpleFuncBtn"
+                class="bg-purple-500 text-white font-bold py-2 px-4 rounded hover:bg-purple-700 transition"
+              >
+                Извикай функцията!
+              </button>
+              <p id="simpleFuncResult" class="text-gray-600 italic">
+                Чакам да натиснеш бутона...
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="params">
+            <h2>Параметри и Аргументи</h2>
+            <p>
+              Функциите стават много по-полезни, когато можем да им подадем
+              информация. Представете си ги като машина за кафе – трябва да ѝ
+              кажете дали искате дълго или късо кафе.
+            </p>
+            <ul>
+              <li>
+                <b>Параметър:</b> Променливата в дефиницията на функцията (напр.
+                <code>name</code>). Това е "мястото", където ще дойдат данните.
+              </li>
+              <li>
+                <b>Аргумент:</b> Реалната стойност, която подаваме при извикване
+                (напр. <code>"Иван"</code>).
+              </li>
+            </ul>
+
+            <pre><code>function greet(name, age) {
+  console.log("Здравей, " + name + "! Ти си на " + age + " години.");
+}
+
+greet("Мария", 25); // "name" става "Мария", "age" става 25
+greet("Петър", 30); // Функцията работи с различни данни!</code></pre>
+
+            <h4>Интерактивен поздрав:</h4>
+            <div class="bg-gray-100 p-4 rounded-lg">
+              <div class="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  id="nameInput"
+                  placeholder="Име (напр. Ани)"
+                  class="border p-2 rounded w-1/2"
+                />
+                <input
+                  type="number"
+                  id="ageInput"
+                  placeholder="Възраст"
+                  class="border p-2 rounded w-1/2"
+                />
+              </div>
+              <button
+                id="greetBtn"
+                class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition w-full"
+              >
+                Поздрави ме!
+              </button>
+              <p
+                id="greetResult"
+                class="font-bold text-lg mt-3 text-center min-h-[1.5em]"
+              ></p>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="return">
+            <h2>Връщане на резултат (<code>return</code>)</h2>
+            <p>
+              Досега нашите функции само "изписваха" неща в конзолата или на
+              екрана. Но истинската сила на функциите е да
+              <b>пресметнат нещо и да ни върнат резултата</b>, за да го
+              използваме по-нататък в кода.
+            </p>
+            <p>
+              Представете си банкомат. Вие му давате карта и ПИН (параметри),
+              той проверява (код на функцията) и ви <b>връща</b> пари (return).
+            </p>
+
+            <div class="warning-box">
+              <p class="font-bold">Разликата между `console.log` и `return`:</p>
+              <p>
+                <code>console.log</code> само <b>показва</b> нещо.
+                <code>return</code> <b>дава стойността</b> обратно на кода. Щом
+                JavaScript стигне до думата <code>return</code>, функцията спира
+                веднага и излиза.
+              </p>
+            </div>
+
+            <pre><code>function add(a, b) {
+  return a + b; // Връща сбора
+  console.log("Това никога няма да се изпълни!"); // Защото е след return
+}
+
+let result = add(5, 10); // result става 15
+console.log(result + 5); // Можем да използваме резултата: 20</code></pre>
+
+            <h4>Интерактивен калкулатор (с return):</h4>
+            <div class="bg-gray-100 p-4 rounded-lg">
+              <div class="flex items-center gap-2 mb-2 justify-center">
+                <input
+                  type="number"
+                  id="calcNum1"
+                  class="border p-2 rounded w-20"
+                  value="5"
+                />
+                <span class="font-bold text-xl">+</span>
+                <input
+                  type="number"
+                  id="calcNum2"
+                  class="border p-2 rounded w-20"
+                  value="3"
+                />
+                <span class="font-bold text-xl">=</span>
+                <span id="calcResult" class="font-bold text-xl text-purple-600"
+                  >?</span
+                >
+              </div>
+              <button
+                id="calcBtn"
+                class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition w-full"
+              >
+                Пресметни
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="arrow-funcs">
+            <h2>Модерният начин: Стрелкови функции (Arrow Functions)</h2>
+            <p>
+              В съвременния JavaScript (ES6) има по-кратък начин за писане на
+              функции. Те правят същото, но се пишат по-бързо и изглеждат
+              по-чисто.
+            </p>
+
+            <pre><code>// Старият начин:
+function oldWay(a) {
+  return a + 10;
+}
+
+// Новият начин (Arrow Function):
+const newWay = (a) => {
+  return a + 10;
+}
+
+// Още по-кратко (ако е само един ред):
+const superShort = (a) => a + 10; // Автоматично връща резултата (implicit return)</code></pre>
+
+            <div class="fun-fact">
+              <p class="font-bold">Функциите са "Променливи"?</p>
+              <p>
+                В JavaScript функциите са "First-class citizens". Това означава,
+                че можете да запазите функция в променлива, да я подадете като
+                параметър на друга функция или дори да я върнете като резултат!
+                Това е супер сила на JS.
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="final-tasks">
+            <h2>Време за практика! Задачи с функции</h2>
+            <p class="!text-left">
+              Кликнете върху всяка задача, за да видите условието.
+            </p>
+
+            <div class="mt-6 space-y-2">
+              <details>
+                <summary>1. Първата функция</summary>
+                <div class="task-content">
+                  Напишете функция <code>sayHello</code>, която при извикване
+                  изписва "Здравей от моята функция!" в конзолата.
+                </div>
+              </details>
+              <details>
+                <summary>2. Параметри</summary>
+                <div class="task-content">
+                  Напишете функция <code>multiply(a, b)</code>, която приема две
+                  числа, умножава ги и изписва резултата с
+                  <code>console.log</code>. Извикайте я с числата 5 и 6.
+                </div>
+              </details>
+              <details>
+                <summary>3. Връщане на стойност</summary>
+                <div class="task-content">
+                  Напишете функция <code>subtract(a, b)</code>, която вади
+                  <code>b</code> от <code>a</code> и
+                  <b>връща</b> (<code>return</code>) резултата. Запазете
+                  резултата в променлива и го изпишете.
+                </div>
+              </details>
+              <details>
+                <summary>4. Четно или нечетно (Функция)</summary>
+                <div class="task-content">
+                  Напишете функция <code>isEven(number)</code>. Тя трябва да
+                  връща <code>true</code>, ако числото е четно, и
+                  <code>false</code>, ако е нечетно.
+                </div>
+              </details>
+              <details>
+                <summary>5. Превръщане в Arrow Function</summary>
+                <div class="task-content">
+                  Пренапишете следната функция като стрелкова: <br /><code
+                    >function double(x) { return x * 2; }</code
+                  >.
+                </div>
+              </details>
+              <details>
+                <summary>6. Функция с масив</summary>
+                <div class="task-content">
+                  Напишете функция <code>getFirstItem(array)</code>, която
+                  приема масив и връща първия му елемент. Тествайте я с
+                  <code>["Ябълка", "Банан"]</code>.
+                </div>
+              </details>
+              <details>
+                <summary>7. Проверка на възраст</summary>
+                <div class="task-content">
+                  Напишете функция <code>checkAge(age)</code>. Ако
+                  <code>age >= 18</code>, да връща "Пълнолетен". В противен
+                  случай - "Непълнолетен".
+                </div>
+              </details>
+              <details>
+                <summary>8. Калкулатор за площ</summary>
+                <div class="task-content">
+                  Напишете функция <code>calcArea(width, height)</code>, която
+                  връща площта на правоъгълник. Ако не се подаде
+                  <code>height</code>, приемете че е квадрат (използвайте
+                  <code>height = width</code>).
+                </div>
+              </details>
+              <details>
+                <summary>9. Дължина на име</summary>
+                <div class="task-content">
+                  Напишете стрелкова функция <code>nameLength</code>, която
+                  приема име и връща колко букви съдържа то
+                  (<code>name.length</code>).
+                </div>
+              </details>
+              <details>
+                <summary>10. Комбиниране (Сложна)</summary>
+                <div class="task-content">
+                  Напишете функция <code>createGreeting(name, hour)</code>. Ако
+                  <code>hour < 12</code>, да връща "Добро утро, [name]". Ако е
+                  между 12 и 18 - "Добър ден, [name]". Иначе - "Добър вечер,
+                  [name]".
+                </div>
+              </details>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <div class="nav-buttons-container">
+        <a href="index7.html" class="nav-button prev">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Към предишния урок
+        </a>
+        <a href="#" class="nav-button next">
+          Към следващия урок
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <footer class="text-center mt-8 text-gray-500">
+        <p>&copy; 2025 Интерактивен JavaScript Урок. инж. Пламена Янева</p>
+      </footer>
+    </div>
+
+    <!-- Всички скриптове за интерактивност са тук -->
+    <script>
+      // Интерактивен тест (Simple Function)
+      const simpleFuncBtn = document.getElementById("simpleFuncBtn");
+      const simpleFuncResult = document.getElementById("simpleFuncResult");
+
+      function sayHelloInteractive() {
+        simpleFuncResult.textContent =
+          "Здравей! Аз съм функция и току-що бях изпълнена!";
+        simpleFuncResult.style.color = "#8b5cf6";
+        simpleFuncResult.style.fontWeight = "bold";
+      }
+
+      simpleFuncBtn.addEventListener("click", sayHelloInteractive);
+
+      // Интерактивен поздрав (Parameters)
+      const greetBtn = document.getElementById("greetBtn");
+      const greetResult = document.getElementById("greetResult");
+
+      function generateGreeting(name, age) {
+        if (!name) return "Моля, въведи име!";
+        if (!age) return "Моля, въведи възраст!";
+        return `Здравей, ${name}! Ти си на ${age} години и вече знаеш функции!`;
+      }
+
+      greetBtn.addEventListener("click", function () {
+        const name = document.getElementById("nameInput").value;
+        const age = document.getElementById("ageInput").value;
+
+        const message = generateGreeting(name, age);
+        greetResult.textContent = message;
+
+        if (name && age) {
+          greetResult.style.color = "#15803d";
+        } else {
+          greetResult.style.color = "#dc2626";
+        }
+      });
+
+      // Интерактивен калкулатор (Return)
+      const calcBtn = document.getElementById("calcBtn");
+      const calcResult = document.getElementById("calcResult");
+
+      function addNumbers(a, b) {
+        return Number(a) + Number(b);
+      }
+
+      calcBtn.addEventListener("click", function () {
+        const num1 = document.getElementById("calcNum1").value;
+        const num2 = document.getElementById("calcNum2").value;
+
+        const sum = addNumbers(num1, num2);
+        calcResult.textContent = sum;
+
+        // Малко анимация
+        calcResult.style.transform = "scale(1.5)";
+        setTimeout(() => (calcResult.style.transform = "scale(1)"), 200);
+      });
+
+      // Функция за добавяне на бутони за копиране
+      document.querySelectorAll("pre").forEach((preElement) => {
+        const codeBlock = preElement.querySelector("code");
+        if (codeBlock) {
+          const copyBtn = document.createElement("button");
+          copyBtn.innerText = "Копирай";
+          copyBtn.className = "copy-btn";
+          preElement.appendChild(copyBtn);
+          copyBtn.addEventListener("click", () => {
+            const codeToCopy = codeBlock.innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = codeToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+              document.execCommand("copy");
+              copyBtn.innerText = "Копирано!";
+            } catch (err) {
+              copyBtn.innerText = "Грешка";
+              console.error("Неуспешно копиране: ", err);
+            }
+            document.body.removeChild(textArea);
+            setTimeout(() => {
+              copyBtn.innerText = "Копирай";
+            }, 2000);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
