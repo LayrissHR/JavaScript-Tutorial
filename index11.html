@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Урок: Същност на PHP - Ниво 11</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+          font-family: 'Inter', sans-serif;
+          scroll-behavior: smooth;
+          background-color: #f3f4f6;
+          background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px), radial-gradient(#d1d5db 0.5px, #f3f4f6 0.5px);
+          background-size: 20px 20px;
+          background-position: 0 0, 10px 10px;
+      }
+      .content-card {
+          background-color: white;
+          border-radius: 12px;
+          padding: 2rem;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+          margin-bottom: 2rem;
+      }
+      .fun-fact {
+          background-color: #f5f3ff;
+          border-left: 4px solid #7c3aed;
+          padding: 1rem;
+          margin: 1rem 0;
+          border-radius: 0 8px 8px 0;
+      }
+      .warning-box {
+          background-color: #fffbeb;
+          border-left: 4px solid #f59e0b;
+          padding: 1rem;
+          margin: 1rem 0;
+          border-radius: 0 8px 8px 0;
+      }
+      .concept-box {
+          background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+          border-left: 4px solid #4f46e5;
+          padding: 1.5rem;
+          border-radius: 8px;
+          margin: 1.5rem 0;
+      }
+      pre {
+          background-color: #1e1e2e; /* PHP Dark Theme */
+          color: #a5b0d5;
+          padding: 1.5rem;
+          border-radius: 8px;
+          overflow-x: auto;
+          font-size: 0.9em;
+          position: relative;
+      }
+      /* Syntax highlighting mock */
+      .php-tag { color: #ff79c6; }
+      .php-func { color: #8be9fd; }
+      .php-str { color: #f1fa8c; }
+      .php-var { color: #bd93f9; }
+      .php-comment { color: #6272a4; font-style: italic; }
+
+      .copy-btn {
+          position: absolute; top: 12px; right: 12px; background-color: #4b5563; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.8em; opacity: 0.6; transition: all 0.2s ease-in-out;
+      }
+      pre:hover .copy-btn { opacity: 1; }
+      .copy-btn:hover { background-color: #6b7280; }
+
+      .prose h2 { margin-top: 2.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.75rem; scroll-margin-top: 80px; font-size: 1.8rem; color: #1f2937; }
+      .prose h3 { margin-top: 2rem; scroll-margin-top: 80px; font-size: 1.4rem; color: #374151; font-weight: 600; }
+      .prose p { text-align: justify; margin-bottom: 1rem; line-height: 1.7; }
+      .nav-item { transition: all 0.2s ease-in-out; }
+      .nav-item:hover { transform: translateY(-2px); color: #4f46e5; }
+
+      /* Table styles */
+      .table-wrapper { overflow-x: auto; margin-top: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+      table { min-width: 100%; divide-y divide-gray-200; }
+      thead { background-color: #f9fafb; }
+      th { padding: 1rem 1.5rem; text-align: left; font-size: 0.85rem; font-weight: 700; color: #4b5563; text-transform: uppercase; letter-spacing: 0.05em; }
+      tbody { background-color: white; divide-y divide-gray-200; }
+      td { padding: 1rem 1.5rem; font-size: 0.95rem; color: #1f2937; line-height: 1.6; }
+
+      /* Simulation Output */
+      .server-output {
+          font-family: 'Courier New', Courier, monospace;
+          background-color: #ffffff;
+          border: 2px solid #e5e7eb;
+          border-radius: 6px;
+          padding: 1rem;
+          margin-top: 1rem;
+          display: none;
+      }
+      .reveal-btn {
+          background-color: #4f46e5;
+          color: white;
+          font-weight: bold;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          margin-top: 0.5rem;
+          transition: background 0.3s;
+      }
+      .reveal-btn:hover { background-color: #4338ca; }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <nav class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="flex items-center justify-between h-16">
+          <span class="text-xl font-bold text-gray-800"
+            >PHP Урок: Въведение</span
+          >
+          <div
+            class="flex flex-wrap justify-center space-x-4 md:space-x-8 text-gray-600 font-medium"
+          >
+            <a href="#what-is" class="nav-item">Какво е?</a>
+            <a href="#client-server" class="nav-item">Клиент vs Сървър</a>
+            <a href="#syntax" class="nav-item">Синтаксис</a>
+            <a href="#variables" class="nav-item">Променливи</a>
+            <a href="#js-vs-php" class="nav-item">JS vs PHP</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+      <header class="text-center mb-12">
+        <div
+          class="inline-block bg-indigo-100 text-indigo-800 p-4 rounded-full mb-4 shadow-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
+            />
+          </svg>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+          Урок: Същност на PHP
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">
+          Навлизане в дълбините на Back-end програмирането
+        </p>
+      </header>
+
+      <main class="prose prose-lg max-w-none">
+        <div class="content-card">
+          <section id="what-is">
+            <h2>Какво всъщност е PHP?</h2>
+            <p>
+              PHP (рекурсивен акроним за <i>PHP: Hypertext Preprocessor</i>) е
+              сървърен скриптов език, предназначен за уеб разработка. Това е
+              езикът, който стои зад гърба на най-големите системи за управление
+              на съдържание (CMS) като <b>WordPress</b>, <b>Joomla</b> и
+              <b>Drupal</b>, както и на гиганти като <b>Facebook</b> (в
+              началото) и <b>Wikipedia</b>.
+            </p>
+            <p>
+              За разлика от HTML, който е статичен и показва едно и също на
+              всеки посетител, PHP позволява създаването на
+              <b>динамични страници</b>. Той може да показва различно съдържание
+              в зависимост от това кой е потребителят, колко е часът, какво има
+              в базата данни или какво е натиснато.
+            </p>
+
+            <div class="fun-fact">
+              <p class="font-bold">Кратка история</p>
+              <p>
+                PHP е създаден през 1994 г. от Расмус Лердорф. Първоначално е
+                бил просто набор от Perl скриптове за следене на посещенията в
+                онлайн резюмето му и се е наричал "Personal Home Page Tools". С
+                времето се развива до PHP 3, PHP 5, PHP 7 (който донесе огромно
+                подобрение в скоростта), а днес вече използваме <b>PHP 8</b>,
+                който включва модерни концепции като JIT (Just-In-Time)
+                компилация за още по-висока производителност.
+              </p>
+            </div>
+
+            <h3>Защо PHP е толкова популярен?</h3>
+            <ul class="list-disc pl-5 mt-4 space-y-2">
+              <li>
+                <b>Безплатен и с отворен код:</b> Всеки може да го използва и
+                променя.
+              </li>
+              <li>
+                <b>Огромна общност:</b> Има милиони уроци, форуми и готови
+                библиотеки.
+              </li>
+              <li>
+                <b>Лесен за начинаещи:</b> Синтаксисът е логичен и прощаващ, но
+                същевременно достатъчно мощен за професионалисти.
+              </li>
+              <li>
+                <b>Съвместимост:</b> Работи на всички основни операционни
+                системи (Windows, Linux, macOS) и уеб сървъри (Apache, Nginx).
+              </li>
+              <li>
+                <b>Бази данни:</b> Интегрира се перфектно с MySQL и други бази
+                данни.
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="client-server">
+            <h2>Клиент срещу Сървър: Архитектурата на уеб</h2>
+            <p>
+              За да разберете PHP, трябва да разберете как работи интернетът на
+              фундаментално ниво. Всяко зареждане на страница е разговор между
+              два компютъра: вашият (Клиент) и компютърът, където се намира
+              сайтът (Сървър).
+            </p>
+
+            <div class="concept-box">
+              <h3 class="!mt-0 text-indigo-800">
+                Разширена аналогия с Ресторанта
+              </h3>
+              <p>Нека разгледаме процеса по-детайлно:</p>
+              <ul class="list-disc pl-5 mt-2 space-y-2">
+                <li>
+                  <b>Клиентът (Вие/Браузърът):</b> Вие сте клиентът в
+                  ресторанта. Вие разглеждате менюто и правите поръчка
+                  (изпращате HTTP Заявка - Request). Тази заявка може да е
+                  проста ("дай ми начална страница") или сложна ("влез в профила
+                  ми с тази парола").
+                </li>
+                <li>
+                  <b>Сервитьорът (Уеб Сървърът - Apache/Nginx):</b> Той приема
+                  вашата поръчка. Ако искате просто чаша вода (статичен HTML
+                  файл или картинка), той я носи веднага. Но ако искате
+                  специално ястие (динамична PHP страница), той носи поръчката в
+                  кухнята.
+                </li>
+                <li>
+                  <b>Главният готвач (PHP Интерпретаторът):</b> Това е магията.
+                  Той получава поръчката ("покажи профила на Иван").
+                  <ul class="list-disc pl-5 mt-1 text-sm text-indigo-900">
+                    <li>Той чете рецептата (PHP файла).</li>
+                    <li>
+                      Отваря хладилника (Базата данни), за да вземе продуктите
+                      (данните на Иван).
+                    </li>
+                    <li>
+                      Готви ястието (обработва данните, изчислява, сглобява).
+                    </li>
+                    <li>Подрежда чинията (генерира чист HTML код).</li>
+                  </ul>
+                </li>
+                <li>
+                  <b>Резултатът (HTML):</b> Готвачът дава готовата чиния на
+                  сервитьора, а той я носи на вас. Вие виждате само вкусната
+                  пържола (HTML). Нямате идея как е била сготвена, какви ножове
+                  са ползвани или от кой рафт са взети подправките.
+                </li>
+              </ul>
+            </div>
+
+            <p>
+              <b>Изводът за сигурността:</b> Тъй като кодът се изпълнява на
+              сървъра, потребителят никога не вижда изходния PHP код. Той вижда
+              само резултата. Това позволява в PHP да се съхраняват тайни (като
+              връзки към бази данни), които в JavaScript (който е видим за
+              всички) биха били откраднати веднага.
+            </p>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="syntax">
+            <h2>Синтаксис и основни правила</h2>
+            <p>
+              PHP е вграден в HTML. Това означава, че в един и същи файл (с
+              разширение <code>.php</code>) можете да имате HTML тагове и PHP
+              код.
+            </p>
+
+            <h3>1. PHP Тагове и Инструкции</h3>
+            <p>
+              Кодът винаги започва с <code>&lt;?php</code> и завършва с
+              <code>?&gt;</code>. Всяка инструкция (ред с команда) в PHP
+              <b>задължително</b> завършва с точка и запетая (<code>;</code>).
+              Ако я пропуснете, ще получите фатална грешка.
+            </p>
+
+            <div class="code-box">
+              <pre><code><span class="php-tag">&lt;?php</span>
+  <span class="php-comment">// Това е едноредов коментар (не се изпълнява)</span>
+  <span class="php-comment"># Това също е едноредов коментар</span>
+  <span class="php-comment">/*
+     Това е многоредов коментар.
+     Може да пишете тук цели романи.
+  */</span>
+
+  <span class="php-func">echo</span> <span class="php-str">"Здравей, свят!"</span>; <span class="php-comment">// Не забравяйте ;</span>
+  <span class="php-func">print</span> <span class="php-str">"Аз правя почти същото като echo."</span>;
+<span class="php-tag">?&gt;</span></code></pre>
+            </div>
+
+            <h3 class="!mt-8">
+              2. Чувствителност към регистъра (Case Sensitivity)
+            </h3>
+            <p>Тук PHP е малко странен за тези, които идват от други езици:</p>
+            <ul class="list-disc pl-5 space-y-2">
+              <li>
+                <b>Ключови думи (Keywords):</b> Не са чувствителни.
+                <code>ECHO</code>, <code>echo</code>, <code>EcHo</code> работят
+                еднакво. Същото важи за <code>if</code>, <code>else</code>,
+                <code>while</code>.
+              </li>
+              <li>
+                <b>Променливи (Variables):</b> Те <b>СА</b> чувствителни!
+                <code>$color</code>, <code>$Color</code> и
+                <code>$COLOR</code> са три напълно различни променливи.
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="variables">
+            <h2>Дълбините на променливите в PHP</h2>
+            <p>
+              Както казахме, променливите започват с <code>$</code>. Но PHP е
+              "слабо типизиран" (loosely typed) език. Това означава, че не е
+              нужно да казвате на компютъра какъв тип данни слагате в
+              променливата - той се досеща сам.
+            </p>
+
+            <h3>Основни типове данни:</h3>
+            <ul class="list-disc pl-5 space-y-2 mb-4">
+              <li><b>String (Низ):</b> Текст. <code>$name = "Ivan";</code></li>
+              <li><b>Integer (Цяло число):</b> <code>$age = 25;</code></li>
+              <li><b>Float (Дробно число):</b> <code>$price = 19.99;</code></li>
+              <li>
+                <b>Boolean (Булев):</b> Истина или лъжа.
+                <code>$isAdmin = true;</code>
+              </li>
+              <li>
+                <b>Array (Масив):</b> Списък от стойности.
+                <code>$colors = array("Red", "Blue");</code>
+              </li>
+              <li>
+                <b>NULL:</b> Специален тип, който означава "нищо". Променлива
+                без стойност.
+              </li>
+            </ul>
+
+            <div class="warning-box">
+              <p class="font-bold">Двойни кавички срещу Единични кавички</p>
+              <p>Това е много важен детайл в PHP:</p>
+              <ul class="list-disc pl-5 mt-2">
+                <li>
+                  <b>Двойни кавички (<code>"..."</code>):</b> Те са "умни". Ако
+                  вътре напишете име на променлива, PHP ще я замени със
+                  стойността ѝ. <br /><code
+                    >$name = "Ани"; echo "Здравей, $name";</code
+                  >
+                  -> ще изпише <i>Здравей, Ани</i>.
+                </li>
+                <li>
+                  <b>Единични кавички (<code>'...'</code>):</b> Те са
+                  "буквални". Те изписват точно това, което виждате. <br /><code
+                    >$name = "Ани"; echo 'Здравей, $name';</code
+                  >
+                  -> ще изпише <i>Здравей, $name</i>.
+                </li>
+              </ul>
+            </div>
+
+            <div class="code-box">
+              <pre><code><span class="php-tag">&lt;?php</span>
+  <span class="php-var">$firstName</span> = <span class="php-str">"Петър"</span>;
+  <span class="php-var">$lastName</span> = <span class="php-str">'Петров'</span>;
+
+  <span class="php-comment">// Конкатенация (Съединяване) с точка (.)</span>
+  <span class="php-func">echo</span> <span class="php-str">"Име: "</span> . <span class="php-var">$firstName</span> . <span class="php-str">" "</span> . <span class="php-var">$lastName</span>;
+  
+  <span class="php-comment">// Интерполация (Само с двойни кавички)</span>
+  <span class="php-func">echo</span> <span class="php-str">"&lt;br&gt;Име: $firstName $lastName"</span>;
+<span class="php-tag">?&gt;</span></code></pre>
+              <button class="reveal-btn" onclick="toggleOutput('output2')">
+                Виж резултата
+              </button>
+              <div id="output2" class="server-output">
+                Име: Петър Петров<br />
+                Име: Петър Петров
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="js-vs-php">
+            <h2>Детайлно сравнение: JavaScript vs PHP</h2>
+            <p>
+              Нека разгледаме разликите в дълбочина, защото като програмисти
+              често ще използвате и двете заедно.
+            </p>
+
+            <div class="table-wrapper">
+              <table>
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th>Характеристика</th>
+                    <th>JavaScript (JS)</th>
+                    <th>PHP</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr>
+                    <td><b>Среда</b></td>
+                    <td>
+                      Front-end (в браузъра). *Node.js съществува, но говорим за
+                      класически уеб.
+                    </td>
+                    <td>Back-end (на сървъра).</td>
+                  </tr>
+                  <tr>
+                    <td><b>Основна цел</b></td>
+                    <td>
+                      Интерактивност, анимации, промяна на DOM в реално време,
+                      API заявки.
+                    </td>
+                    <td>
+                      Генериране на HTML, работа с бази данни, файлова система,
+                      сигурност.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>Презареждане</b></td>
+                    <td>
+                      Може да променя съдържание без презареждане (AJAX/Fetch).
+                    </td>
+                    <td>
+                      В класическия вид изисква презареждане, за да покаже нови
+                      данни.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>Променливи</b></td>
+                    <td>
+                      <code>let</code>, <code>const</code>, <code>var</code>
+                    </td>
+                    <td>Винаги със <code>$</code> (долар).</td>
+                  </tr>
+                  <tr>
+                    <td><b>Обединяване на текст</b></td>
+                    <td>Знак плюс (<code>+</code>)</td>
+                    <td>Точка (<code>.</code>)</td>
+                  </tr>
+                  <tr>
+                    <td><b>Масиви</b></td>
+                    <td><code>length</code> свойство.</td>
+                    <td>
+                      <code>count()</code> функция. Асоциативните масиви са
+                      много мощни в PHP.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-card">
+          <section id="final-tasks">
+            <h2>Време за размисъл и подготовка</h2>
+            <p>
+              Тъй като PHP изисква сървърна среда, следващите стъпки във вашето
+              обучение ще изискват инсталиране на локален сървър. Ето няколко
+              теоретични задачи за затвърждаване на знанията:
+            </p>
+
+            <div class="mt-6 space-y-2">
+              <details>
+                <summary>1. Математика със стрингове?</summary>
+                <div class="task-content">
+                  В PHP: <code>echo "5" + "10";</code><br />
+                  Какъв ще е резултатът? За разлика от JS, който би съединил
+                  текстовете ("510"), PHP ще се опита да ги превърне в числа
+                  заради плюса.
+                  <br /><b>Отговор:</b> 15
+                </div>
+              </details>
+              <details>
+                <summary>2. Коментарите са важни</summary>
+                <div class="task-content">
+                  Ако напишете коментар в PHP файл <code>// Тайна парола</code>,
+                  ще може ли потребителят да го види, ако даде "View Source" в
+                  браузъра си? <br /><b>Отговор:</b> Не. Коментарите в PHP се
+                  премахват от сървъра и никога не стигат до браузъра на
+                  клиента. Коментарите в HTML/JS обаче са видими.
+                </div>
+              </details>
+              <details>
+                <summary>3. Смесване на езици</summary>
+                <div class="task-content">
+                  Може ли да имате PHP код, който генерира JavaScript код?
+                  <br /><b>Отговор:</b> Да, абсолютно! PHP просто генерира
+                  текст. Този текст може да бъде HTML, CSS или дори JavaScript,
+                  който браузърът после ще изпълни.
+                </div>
+              </details>
+              <details>
+                <summary>4. Кавичките</summary>
+                <div class="task-content">
+                  <code>$fruit = "ябълка"; echo 'Аз обичам $fruit';</code><br />
+                  Какво ще се изпише?
+                  <br /><b>Отговор:</b> Аз обичам $fruit (буквално). Заради
+                  единичните кавички променливата няма да се разпознае.
+                </div>
+              </details>
+            </div>
+
+            <div class="warning-box mt-6">
+              <p class="font-bold">Подготовка за следващия урок</p>
+              <p>
+                За да пишете и тествате PHP код на вашия компютър, силно
+                препоръчвам да инсталирате пакета <b>XAMPP</b> (за
+                Windows/Linux) или <b>MAMP</b> (за Mac). Те инсталират Apache
+                (сървър), PHP (език) и MySQL (база данни) с един клик. Ще ви
+                трябват за бъдещите примери!
+              </p>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="text-center mt-8 text-gray-500 pb-8">
+        <p>&copy; 2025 Урок по PHP. инж. Пламена Янева</p>
+      </footer>
+    </div>
+
+    <script>
+      // Функция за симулация на сървърен отговор
+      function toggleOutput(id) {
+        const output = document.getElementById(id);
+        if (output.style.display === "block") {
+          output.style.display = "none";
+        } else {
+          output.style.display = "block";
+          output.style.animation = "fadeIn 0.5s";
+        }
+      }
+
+      // Copy button functionality
+      document.querySelectorAll("pre").forEach((preElement) => {
+        const copyBtn = document.createElement("button");
+        copyBtn.innerText = "Копирай";
+        copyBtn.className = "copy-btn";
+        preElement.appendChild(copyBtn);
+        copyBtn.addEventListener("click", () => {
+          const codeToCopy = preElement.innerText.replace("Копирай", "").trim();
+          navigator.clipboard.writeText(codeToCopy);
+          copyBtn.innerText = "Копирано!";
+          setTimeout(() => {
+            copyBtn.innerText = "Копирай";
+          }, 2000);
+        });
+      });
+    </script>
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </body>
+</html>
